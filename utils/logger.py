@@ -16,7 +16,7 @@ log_mapping = {
 }
 
 
-def get_logging(type_: str, date: bool = False) -> str:
+def get_logging(type_: str, date: bool = True) -> str:
     message = log_mapping[type_]
 
     if date:
@@ -24,5 +24,18 @@ def get_logging(type_: str, date: bool = False) -> str:
         timestamp = f"{get_bright_color('CYAN')}{timestamp.hour}:{timestamp.minute}:{timestamp.second}" \
                     f"{get_bright_color('RESET')}"
         message = f"[{timestamp}]{message} "
+
+    return message
+
+
+def get_message_logging(username: str, message: str, date: bool = True) -> str:
+    message_log = log_mapping["message"]
+
+    if date:
+        timestamp = datetime.now()
+        timestamp = f"{get_bright_color('CYAN')}{timestamp.hour}:{timestamp.minute}:{timestamp.second}" \
+                    f"{get_bright_color('RESET')}"
+        message = f"[{timestamp}]{get_bright_color('YELLOW')} {username} {message_log} {get_bright_color('GREEN')}" \
+                  f"{message}"
 
     return message

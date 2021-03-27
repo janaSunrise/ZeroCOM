@@ -22,7 +22,7 @@ if __name__ == "__main__":
         server_sock.bind((IP, PORT))
     except OSError:
         on_startup("Server")
-        print(get_logging("error", True) + f"{get_color('RED')}Server could not be initialized. Check the PORT.")
+        print(get_logging("error") + f"{get_color('RED')}Server could not be initialized. Check the PORT.")
         sys.exit(1)
     else:
         end = time.perf_counter()
@@ -33,25 +33,25 @@ if __name__ == "__main__":
 
         SOCKETS.append(server_sock)
 
-        print(get_logging("success", True) + f"{get_color('GREEN')}Server started. Listening for connections.")
+        print(get_logging("success") + f"{get_color('GREEN')}Server started. Listening for connections.")
 
     while True:  # Main loop
         try:
             ready_to_read, ready_to_write, in_error = select.select(SOCKETS, [], SOCKETS)
         except KeyboardInterrupt:
-            print(get_logging("info", True) + f"{get_color('MAGENTA')} Server stopping.")
+            print(get_logging("info") + f"{get_color('MAGENTA')} Server stopping.")
 
             for socket in SOCKETS:
                 socket.close()
             time.sleep(1)
 
-            print(get_logging("success", True) + f"{get_color('GREEN')} Server stopped successfully.")
+            print(get_logging("success") + f"{get_color('GREEN')} Server stopped successfully.")
             sys.exit(0)
 
         for errored_socket in in_error:
             client = CLIENTS[errored_socket]
             print(
-                get_logging("warning", True) + f"{get_color('YELLOW')}Exception occurred. Location {client.username} "
+                get_logging("warning") + f"{get_color('YELLOW')}Exception occurred. Location {client.username} "
                                                f"[{client.address}]"
             )
 
