@@ -39,7 +39,7 @@ if __name__ == "__main__":
     sock.setblocking(False)  # So it doesn't block connections.
 
     # Send the specified uname.
-    uname = USERNAME.encode('utf-8')
+    uname = USERNAME.encode("utf-8")
     uname_header = get_header(uname)
 
     # Send the message

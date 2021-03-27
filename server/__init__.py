@@ -14,7 +14,8 @@ class Client:
         self.address = f"{address[0]}:{address[1]}"
 
         self.username_header = uname["header"]
-        self.username = uname["data"].decode("utf-8")
+        self.raw_username = uname["data"]
+        self.username = self.raw_username.decode("utf-8")
 
     @staticmethod
     def get_header(message: str) -> bytes:
@@ -31,18 +32,19 @@ def receive_message(socket_: socket.socket) -> t.Union[dict, bool]:
         message_length = int(message_header.decode("utf-8").strip())
 
         return {"header": message_header, "data": socket_.recv(message_length)}
-    except BaseException:
+    except Exception as exc:
+        raise exc
         return False
 
 
-def process_conn(sock, sockets: list, clients: dict) -> bool:
+def process_conn(sock: socket.socket, sockets: list, clients: dict) -> bool:
     socket_, address = sock.accept()
 
     uname = receive_message(socket_)
 
     client = Client(socket_, address, uname)
 
-    if uname is False:
+    if not uname:
         print(get_logging("error") + f"{get_color('RED')}New connection failed from {client.address}.")
         return False
     else:
@@ -64,7 +66,7 @@ def process_message(sock, sockets: list, clients: dict) -> bool:
 
     message = receive_message(sock)
 
-    if message is False:
+    if not message:
         client = clients[sock]
         print(get_logging("error") + f"{get_color('RED')}Connection closed [{client.username}@{client.address}].")
         sockets.remove(sock)
@@ -73,5 +75,5 @@ def process_message(sock, sockets: list, clients: dict) -> bool:
 
     client = clients[sock]
     msg = message['data'].decode('utf-8')
-    print(get_message_logging(client.username, msg))
+    print(get_message_logging(client.username, msg) + "\n")
     broadcast(message)

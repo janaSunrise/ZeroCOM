@@ -15,4 +15,4 @@ BANNER = dedent(f"""
 CONFIG_FILE = "config.ini"
 IP = config_parser(CONFIG_FILE, "server", "IP")
 PORT = config_parser(CONFIG_FILE, "server", "port", int_=True)
-HEADER_LENGTH = config_parser(CONFIG_FILE, "server", "HEADER_LEN")
+HEADER_LENGTH = config_parser(CONFIG_FILE, "server", "HEADER_LEN", int_=True)
