@@ -52,7 +52,7 @@ if __name__ == "__main__":
             client = CLIENTS[errored_socket]
             print(
                 get_logging("warning") + f"{get_color('YELLOW')}Exception occurred. Location {client.username} "
-                                               f"[{client.address}]"
+                                         f"[{client.address}]"
             )
 
             SOCKETS.remove(errored_socket)

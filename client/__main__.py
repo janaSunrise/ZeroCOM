@@ -53,7 +53,7 @@ if __name__ == "__main__":
         try:
             ready_to_read, ready_to_write, in_error = select.select(SOCKETS, [], [])
         except KeyboardInterrupt:
-            print(get_logging("info") + f"{get_color('MAGENTA')} Disconnecting, hold on.")
+            print("\n" + get_logging("info") + f"{get_color('MAGENTA')} Disconnecting, hold on.")
 
             sock.close()
 
@@ -62,6 +62,7 @@ if __name__ == "__main__":
 
         for run_sock in ready_to_read:
             if run_sock == sock:
+                print(sock)
                 try:
                     username, message = receive_message(sock)
 

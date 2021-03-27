@@ -2,6 +2,8 @@ import socket
 import typing as t
 
 from utils.config import HEADER_LENGTH
+from utils.logger import get_logging
+from utils.utils import get_color
 
 
 class Client:
@@ -31,3 +33,22 @@ def receive_message(socket_: socket.socket) -> t.Union[dict, bool]:
         return {"header": message_header, "data": socket_.recv(message_length)}
     except BaseException:
         return False
+
+
+def process_conn(sock, sockets: list, clients: dict) -> bool:
+    socket_, address = sock.accept()
+
+    uname = receive_message(socket_)
+
+    client = Client(socket_, address, uname)
+
+    if uname is False:
+        print(get_logging("error") + f"{get_color('RED')}New connection failed from {client.address}.")
+        return False
+    else:
+        sockets.append(socket_)
+        clients[socket_] = client
+
+        print(get_logging("success") + f"{get_color('GREEN')}Accepted new connection requested by {client.username} "
+                                       f"[{client.address}].")
+        return True
