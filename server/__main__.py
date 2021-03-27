@@ -6,7 +6,7 @@ import time
 
 from utils.utils import on_startup, get_color
 from utils.logger import get_logging
-from utils.config import HEADER_LENGTH, IP, PORT
+from utils.config import IP, PORT
 
 SOCKETS = []
 CLIENTS = {}
@@ -47,3 +47,13 @@ if __name__ == "__main__":
 
             print(get_logging("success", True) + f"{get_color('GREEN')} Server stopped successfully.")
             sys.exit(0)
+
+        for errored_socket in in_error:
+            client = CLIENTS[errored_socket]
+            print(
+                get_logging("warning", True) + f"{get_color('YELLOW')}Exception occurred. Location {client.username} "
+                                               f"[{client.address}]"
+            )
+
+            SOCKETS.remove(errored_socket)
+            CLIENTS.pop(errored_socket)
