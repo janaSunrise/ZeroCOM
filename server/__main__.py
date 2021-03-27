@@ -1,5 +1,5 @@
 # -- Imports --
-from .config import BANNER
+from .utils import on_startup
 
 if __name__ == "__main__":
-    print(BANNER)
+    on_startup()
