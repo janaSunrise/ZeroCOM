@@ -55,9 +55,12 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("\n" + get_logging("info") + f"{get_color('MAGENTA')} Disconnecting, hold on.")
 
+            start = time.perf_counter()
             sock.close()
+            end = time.perf_counter()
+            duration = round((end - start) * 1000, 2)
 
-            print(get_logging("success") + f"{get_color('GREEN')} Disconnected successfully.")
+            print(get_logging("success") + f"{get_color('GREEN')} Disconnected successfully in {duration}s.")
             sys.exit(0)
 
         for run_sock in ready_to_read:

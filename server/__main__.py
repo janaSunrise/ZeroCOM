@@ -42,11 +42,13 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print(get_logging("info") + f"{get_color('MAGENTA')} Server stopping.")
 
+            start = time.perf_counter()
             for socket in SOCKETS:
                 socket.close()
-            time.sleep(1)
+            end = time.perf_counter()
+            duration = round((end - start) * 1000, 2)
 
-            print(get_logging("success") + f"{get_color('GREEN')} Server stopped successfully.")
+            print(get_logging("success") + f"{get_color('GREEN')} Server stopped successfully in {duration}s.")
             sys.exit(0)
 
         for socket_ in ready_to_read:
