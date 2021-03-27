@@ -32,8 +32,7 @@ def receive_message(socket_: socket.socket) -> t.Union[dict, bool]:
         message_length = int(message_header.decode("utf-8").strip())
 
         return {"header": message_header, "data": socket_.recv(message_length)}
-    except Exception as exc:
-        raise exc
+    except Exception:
         return False
 
 
