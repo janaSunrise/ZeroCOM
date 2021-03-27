@@ -35,7 +35,7 @@ def config_parser(filename: str, section: str, variable: str, bool_: bool = Fals
         return parser.get(section, variable)
 
 
-def on_startup() -> None:
+def on_startup(name: str) -> None:
     from .config import BANNER  # To prevent circular imports.
 
     version = config_parser("config.ini", "version", "VERSION")
@@ -44,7 +44,7 @@ def on_startup() -> None:
     clear_screen()
     message = dedent(f"""
     {BANNER}
-    {get_bright_color("GREEN")} ZeroCOM Running. | {get_bright_color("YELLOW")}{version}
+    {get_bright_color("GREEN")} ZeroCOM {name} Running. | {get_bright_color("YELLOW")}{version}
     """)
 
     print(message)
