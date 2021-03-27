@@ -24,7 +24,7 @@ if __name__ == "__main__":
     except ConnectionRefusedError:
         on_startup("Client")
         print(get_logging("error", True) + f"{get_color('RED')}Connection could not be established. Invalid HOST/PORT.")
-        sys.exit()
+        sys.exit(1)
     else:
         end = time.perf_counter()
         duration = round((end - start) * 1000, 2)
