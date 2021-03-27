@@ -75,5 +75,5 @@ def process_message(sock, sockets: list, clients: dict) -> bool:
 
     client = clients[sock]
     msg = message['data'].decode('utf-8')
-    print(get_message_logging(client.username, msg) + "\n")
+    print(get_message_logging(client.username, msg))
     broadcast(message)

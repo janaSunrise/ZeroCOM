@@ -35,7 +35,7 @@ def get_message_logging(username: str, message: str, date: bool = True) -> str:
         timestamp = datetime.now()
         timestamp = f"{get_bright_color('CYAN')}{timestamp.hour}:{timestamp.minute}:{timestamp.second}" \
                     f"{get_bright_color('RESET')}"
-        message = f"[{timestamp}]{get_bright_color('YELLOW')} {username} {message_log} {get_bright_color('GREEN')}" \
-                  f"{message}"
+        message = f"[{timestamp}]{get_bright_color('YELLOW')} {username} {get_color('RESET')}{message_log} " \
+                  f"{get_bright_color('GREEN')}{message}"
 
     return message

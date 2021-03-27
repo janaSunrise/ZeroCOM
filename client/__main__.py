@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
         on_startup("Client", duration)
 
-        print(get_logging("success") + f"{get_color('GREEN')}Connected to remote host.")
+        print(get_logging("success") + f"{get_color('GREEN')}Connected to remote host@[{SERVER_IP}:{PORT}].")
 
     sock.setblocking(False)  # So it doesn't block connections.
 
@@ -62,11 +62,10 @@ if __name__ == "__main__":
 
         for run_sock in ready_to_read:
             if run_sock == sock:
-                print(sock)
                 try:
                     username, message = receive_message(sock)
 
-                    print(get_message_logging(username, message), end="")
+                    print("\n" + get_message_logging(username, message))
                     print(get_message_logging("ME", ""), end="")
                     sys.stdout.flush()
 
