@@ -7,6 +7,7 @@ import time
 from utils.utils import on_startup, get_color
 from utils.logger import get_logging
 from utils.config import IP, PORT
+from server import process_conn, process_message
 
 SOCKETS = []
 CLIENTS = {}
@@ -47,6 +48,12 @@ if __name__ == "__main__":
 
             print(get_logging("success") + f"{get_color('GREEN')} Server stopped successfully.")
             sys.exit(0)
+
+        for socket_ in ready_to_read:
+            if socket_ == server_sock:
+                process_conn(socket_, SOCKETS, CLIENTS)
+            else:
+                process_message(socket_, SOCKETS, CLIENTS)
 
         for errored_socket in in_error:
             client = CLIENTS[errored_socket]

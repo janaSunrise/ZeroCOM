@@ -2,7 +2,7 @@ import socket
 import typing as t
 
 from utils.config import HEADER_LENGTH
-from utils.logger import get_logging
+from utils.logger import get_logging, get_message_logging
 from utils.utils import get_color
 
 
@@ -52,3 +52,26 @@ def process_conn(sock, sockets: list, clients: dict) -> bool:
         print(get_logging("success") + f"{get_color('GREEN')}Accepted new connection requested by {client.username} "
                                        f"[{client.address}].")
         return True
+
+
+def process_message(sock, sockets: list, clients: dict) -> bool:
+    def broadcast(message: dict) -> None:
+        for client_socket in clients:
+            if client_socket != sock:
+                sender_information = client.username_header + client.raw_username
+                message_to_send = message["header"] + message["data"]
+                client_socket.send(sender_information + message_to_send)
+
+    message = receive_message(sock)
+
+    if message is False:
+        client = clients[sock]
+        print(get_logging("error") + f"{get_color('RED')}Connection closed [{client.username}@{client.address}].")
+        sockets.remove(sock)
+        clients.pop(sock)
+        return False
+
+    client = clients[sock]
+    msg = message['data'].decode('utf-8')
+    print(get_message_logging(client.username, msg))
+    broadcast(message)

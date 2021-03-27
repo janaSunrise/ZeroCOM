@@ -81,4 +81,3 @@ if __name__ == "__main__":
                 sys.stdout.flush()
 
                 send_message(message, sock)
-
