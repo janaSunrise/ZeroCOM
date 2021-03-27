@@ -1,4 +1,5 @@
 # -- Imports --
+import select
 import socket
 import sys
 import time
@@ -33,3 +34,16 @@ if __name__ == "__main__":
         SOCKETS.append(server_sock)
 
         print(get_logging("success", True) + f"{get_color('GREEN')}Server started. Listening for connections.")
+
+    while True:  # Main loop
+        try:
+            ready_to_read, ready_to_write, in_error = select.select(SOCKETS, [], SOCKETS)
+        except KeyboardInterrupt:
+            print(get_logging("info", True) + f"{get_color('MAGENTA')} Server stopping.")
+
+            for socket in SOCKETS:
+                socket.close()
+            time.sleep(1)
+
+            print(get_logging("success", True) + f"{get_color('GREEN')} Server stopped successfully.")
+            sys.exit(0)
