@@ -35,7 +35,7 @@ def config_parser(filename: str, section: str, variable: str, bool_: bool = Fals
         return parser.get(section, variable)
 
 
-def on_startup(name: str) -> None:
+def on_startup(name: str, boot_duration: float = None) -> None:
     from .config import BANNER  # To prevent circular imports.
 
     version = config_parser("config.ini", "version", "VERSION")
@@ -44,7 +44,8 @@ def on_startup(name: str) -> None:
     clear_screen()
     message = dedent(f"""
     {BANNER}
-    {get_bright_color("GREEN")} ZeroCOM {name} Running. | {get_bright_color("YELLOW")}{version}
+    {get_bright_color("GREEN")}ZeroCOM {name} Running. | {get_bright_color("YELLOW")}{version}
+    {f"{get_bright_color('YELLOW')}TOOK {boot_duration}ms to start." if boot_duration is not None else ""}
     """)
 
     print(message)

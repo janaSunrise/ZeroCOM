@@ -21,7 +21,8 @@ def get_logging(type_: str, date: bool = False) -> str:
 
     if date:
         timestamp = datetime.now()
-        timestamp = f"{timestamp.hour}:{timestamp.minute}:{timestamp.second}"
-        message = f"[{timestamp}]" + message
+        timestamp = f"{get_bright_color('CYAN')}{timestamp.hour}:{timestamp.minute}:{timestamp.second}" \
+                    f"{get_bright_color('RESET')}"
+        message = f"[{timestamp}]{message} "
 
     return message
