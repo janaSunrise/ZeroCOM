@@ -32,7 +32,7 @@ def receive_message(socket_: socket.socket) -> t.Union[dict, bool]:
         message_length = int(message_header.decode("utf-8").strip())
 
         return {"header": message_header, "data": socket_.recv(message_length)}
-    except Exception:
+    except:
         return False
 
 
@@ -69,7 +69,7 @@ def process_message(sock, sockets: list, clients: dict) -> bool:
         client = clients[sock]
         print(get_logging("error") + f"{get_color('RED')}Connection closed [{client.username}@{client.address}].")
         sockets.remove(sock)
-        clients.pop(sock)
+        del clients[sock]
         return False
 
     client = clients[sock]

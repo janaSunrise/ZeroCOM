@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     while True:  # Main loop
         try:
-            ready_to_read, ready_to_write, in_error = select.select(SOCKETS, [], SOCKETS)
+            ready_to_read, _, in_error = select.select(SOCKETS, [], SOCKETS)
         except KeyboardInterrupt:
             print(get_logging("info") + f"{get_color('MAGENTA')} Server stopping.")
 
@@ -65,4 +65,4 @@ if __name__ == "__main__":
             )
 
             SOCKETS.remove(errored_socket)
-            CLIENTS.pop(errored_socket)
+            del CLIENTS[errored_socket]
