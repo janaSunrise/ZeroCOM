@@ -23,7 +23,7 @@ if __name__ == "__main__":
         server_sock.bind((IP, PORT))
     except OSError:
         on_startup("Server")
-        print(get_logging("error") + f"{get_color('RED')}Server could not be initialized. Check the PORT.")
+        print(get_logging("error", "Server could not be initialized. Check the PORT."))
         sys.exit(1)
     else:
         end = time.perf_counter()
@@ -34,13 +34,13 @@ if __name__ == "__main__":
 
         SOCKETS.append(server_sock)
 
-        print(get_logging("success") + f"{get_color('GREEN')}Server started. Listening for connections.")
+        print(get_logging("success", "Server started. Listening for connections."))
 
     while True:  # Main loop
         try:
             ready_to_read, _, in_error = select.select(SOCKETS, [], SOCKETS)
         except KeyboardInterrupt:
-            print(get_logging("info") + f"{get_color('MAGENTA')} Server stopping.")
+            print(get_logging("info", "Server stopping."))
 
             start = time.perf_counter()
             for socket in SOCKETS:
@@ -48,7 +48,7 @@ if __name__ == "__main__":
             end = time.perf_counter()
             duration = round((end - start) * 1000, 2)
 
-            print(get_logging("success") + f"{get_color('GREEN')} Server stopped successfully in {duration}s.")
+            print(get_logging("success", f"Server stopped successfully in {duration}s."))
             sys.exit(0)
 
         for socket_ in ready_to_read:
@@ -60,8 +60,10 @@ if __name__ == "__main__":
         for errored_socket in in_error:
             client = CLIENTS[errored_socket]
             print(
-                get_logging("warning") + f"{get_color('YELLOW')}Exception occurred. Location {client.username} "
-                                         f"[{client.address}]"
+                get_logging(
+                    "warning",
+                    f"{get_color('YELLOW')}Exception occurred. Location {client.username} [{client.address}]"
+                )
             )
 
             SOCKETS.remove(errored_socket)

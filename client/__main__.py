@@ -6,7 +6,7 @@ import sys
 import time
 
 from client import get_header, receive_message, send_message
-from utils.utils import get_color, on_startup
+from utils.utils import on_startup
 from utils.logger import get_logging, get_message_logging
 
 if __name__ == "__main__":
@@ -26,7 +26,7 @@ if __name__ == "__main__":
         client_socket.connect((SERVER_IP, PORT))
     except ConnectionRefusedError:
         on_startup("Client")
-        print(get_logging("error") + f"{get_color('RED')}Connection could not be established. Invalid HOST/PORT.")
+        print(get_logging("error", "Connection could not be established. Invalid HOST/PORT."))
         sys.exit(1)
     else:
         end = time.perf_counter()
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
         on_startup("Client", duration)
 
-        print(get_logging("success") + f"{get_color('GREEN')}Connected to remote host@[{SERVER_IP}:{PORT}].")
+        print(get_logging("success", f"Connected to remote host@[{SERVER_IP}:{PORT}]."))
 
     client_socket.setblocking(False)  # So it doesn't block connections.
 
@@ -53,14 +53,14 @@ if __name__ == "__main__":
         try:
             ready_to_read, ready_to_write, in_error = select.select(SOCKETS, [], [])
         except KeyboardInterrupt:
-            print("\n" + get_logging("info") + f"{get_color('MAGENTA')} Disconnecting, hold on.")
+            print("\n" + get_logging("info", "Disconnecting, hold on."))
 
             start = time.perf_counter()
             client_socket.close()
             end = time.perf_counter()
             duration = round((end - start) * 1000, 2)
 
-            print(get_logging("success") + f"{get_color('GREEN')} Disconnected successfully in {duration}s.")
+            print(get_logging("success", f"Disconnected successfully in {duration}s."))
             sys.exit(0)
 
         for run_sock in ready_to_read:
@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
                 except IOError as e:
                     if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
-                        print(get_logging("error") + f"Reading Error occurred! {str(e)}")
+                        print(get_logging("error", f"Reading Error occurred! {str(e)}"))
                         sys.exit()
 
                     continue

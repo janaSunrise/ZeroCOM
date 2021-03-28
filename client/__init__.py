@@ -4,7 +4,6 @@ import typing as t
 
 from utils.config import HEADER_LENGTH
 from utils.logger import get_logging
-from utils.utils import get_color
 
 
 def get_header(message: bytes) -> bytes:
@@ -15,7 +14,7 @@ def receive_message(client_socket: socket.socket) -> tuple:
     username_header = client_socket.recv(HEADER_LENGTH)
 
     if not len(username_header):
-        print(get_logging("error", True) + f"{get_color('RED')} Server has closed the connection.")
+        print(get_logging("error", "Server has closed the connection."))
         sys.exit(1)
 
     username_len = int(username_header.decode('utf-8').strip())

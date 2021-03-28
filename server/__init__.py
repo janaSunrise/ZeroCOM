@@ -44,14 +44,16 @@ def process_conn(sock: socket.socket, sockets: list, clients: dict) -> bool:
     client = Client(socket_, address, uname)
 
     if not uname:
-        print(get_logging("error") + f"{get_color('RED')}New connection failed from {client.address}.")
+        print(get_logging("error", f"New connection failed from {client.address}."))
         return False
     else:
         sockets.append(socket_)
         clients[socket_] = client
 
-        print(get_logging("success") + f"{get_color('GREEN')}Accepted new connection requested by {client.username} "
-                                       f"[{client.address}].")
+        print(get_logging(
+            "success",
+            f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."
+        ))
         return True
 
 
@@ -67,7 +69,7 @@ def process_message(sock, sockets: list, clients: dict) -> bool:
 
     if not message:
         client = clients[sock]
-        print(get_logging("error") + f"{get_color('RED')}Connection closed [{client.username}@{client.address}].")
+        print(get_logging("error", f"Connection closed [{client.username}@{client.address}]."))
         sockets.remove(sock)
         del clients[sock]
         return False
