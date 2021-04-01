@@ -1,12 +1,10 @@
 # -- Imports --
 import errno
 import select
-import socket
 import sys
 import time
 
-from client import get_header, receive_message, send_message
-from utils.utils import on_startup
+from client import Client
 from utils.logger import get_logging, get_message_logging
 
 if __name__ == "__main__":
@@ -20,35 +18,20 @@ if __name__ == "__main__":
     _, SERVER_IP, PORT, USERNAME, PASSWORD = sys.argv
     PORT = int(PORT)
 
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # Initialize the client object
+    client = Client((SERVER_IP, PORT), USERNAME)
 
-    try:
-        client_socket.connect((SERVER_IP, PORT))
-    except ConnectionRefusedError:
-        on_startup("Client")
-        print(get_logging("error", "Connection could not be established. Invalid HOST/PORT."))
-        sys.exit(1)
-    else:
-        end = time.perf_counter()
-        duration = round((end - start) * 1000, 2)
+    # Try the connection
+    client.connect()
 
-        on_startup("Client", duration)
+    # Initialize the connection, If connected
+    client.initialize()
 
-        print(get_logging("success", f"Connected to remote host@[{SERVER_IP}:{PORT}]."))
-
-    client_socket.setblocking(False)  # So it doesn't block connections.
-
-    # Send the specified uname.
-    uname = USERNAME.encode("utf-8")
-    uname_header = get_header(uname)
-
-    # Send the message
-    client_socket.send(uname_header + uname)
-
+    # Print the initial message logging.
     print(get_message_logging("ME", ""), end="")
 
-    while True:  # Main loop
-        SOCKETS = [sys.stdin, client_socket]
+    while True:
+        SOCKETS = [sys.stdin, client.socket]
 
         try:
             ready_to_read, ready_to_write, in_error = select.select(SOCKETS, [], [])
@@ -56,7 +39,11 @@ if __name__ == "__main__":
             print("\n" + get_logging("info", "Disconnecting, hold on."))
 
             start = time.perf_counter()
-            client_socket.close()
+
+            # Close the connection
+            client.disconnect()
+
+            # Calculate the timing.
             end = time.perf_counter()
             duration = round((end - start) * 1000, 2)
 
@@ -64,9 +51,9 @@ if __name__ == "__main__":
             sys.exit(0)
 
         for run_sock in ready_to_read:
-            if run_sock == client_socket:
+            if run_sock == client.socket:
                 try:
-                    username, message = receive_message(client_socket)
+                    username, message = client.receive_message()
 
                     print("\n" + get_message_logging(username, message))
                     print(get_message_logging("ME", ""), end="")
@@ -83,4 +70,4 @@ if __name__ == "__main__":
                 print(get_message_logging("ME", ""), end="")
                 sys.stdout.flush()
 
-                send_message(message, client_socket)
+                client.send_message(message)
