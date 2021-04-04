@@ -62,20 +62,10 @@ If you have various suggestions, questions or want to discuss things wit our com
 We love people's support in growing and improving. Be sure to leave a ⭐️ if you like the project and 
 also be sure to contribute, if you're interested!
 
-<p align="center">
+## License
 
-Made by janaSunrise with ❤
+[GPL V3](https://github.com/janaSunrise/ZeroCOM/blob/main/LICENSE)
 
-</p>
-
-## Author
-
-👤 **Sunrit Jana**
-
-* Website: https://sunritjana.now.sh
-* Twitter: [@janaSunrise](https://twitter.com/janaSunrise)
-* Github: [@janaSunrise](https://github.com/janaSunrise)
-* LinkedIn: [@SunritJana](https://linkedin.com/in/SunritJana)
 
 <div align="center">
   Made by Sunrit Jana with ❤️
