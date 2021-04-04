@@ -90,7 +90,7 @@ class Server(threading.Thread):
         except Exception:
             return False
 
-    def process_connection(self) -> bool:
+    def process_connection(self) -> None:
         socket_, address = self.socket.accept()
 
         uname = self.receive_message(socket_)
@@ -99,7 +99,6 @@ class Server(threading.Thread):
 
         if not uname:
             print(get_logging("error", f"New connection failed from {client.address}."))
-            return False
         else:
             self.sockets_list.append(socket_)
             self.clients[socket_] = client
@@ -108,7 +107,6 @@ class Server(threading.Thread):
                 "success",
                 f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."
             ))
-            return True
 
     def process_message(self, socket_) -> bool:
         def broadcast(message: dict) -> None:
