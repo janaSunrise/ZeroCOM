@@ -12,7 +12,8 @@ log_color_mapping = {
     "message": get_bright_color('CYAN'),
     "success": get_bright_color('GREEN'),
     "info": get_bright_color('MAGENTA'),
-    "critical": get_bright_color('RED') + Back.YELLOW
+    "critical": get_bright_color('RED') + Back.YELLOW,
+    "flash": get_bright_color('BLUE')
 }
 
 log_mapping = {
@@ -22,6 +23,7 @@ log_mapping = {
     "success": f"[{log_color_mapping['success']}+{get_color('RESET')}]",
     "info": f"[{log_color_mapping['info']}#{get_color('RESET')}]",
     "critical": f"[{log_color_mapping['critical']}X{get_color('RESET')}{Back.RESET}]",
+    "flash": f"[{log_color_mapping['flash']}-{get_color('RESET')}]"
 }
 
 
