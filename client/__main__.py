@@ -28,6 +28,8 @@ if __name__ == "__main__":
     client.initialize()
 
     # Print the initial message logging.
+    print(get_logging("flash", "Welcome to the chat. CTRL+C to disconnect. Happy chatting\n"))
+
     print(get_message_logging("ME", ""), end="")
 
     while True:

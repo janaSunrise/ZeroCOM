@@ -36,7 +36,7 @@ class Client:
 
             on_startup("Client", self.startup_duration)
 
-            print(get_logging("success", f"Connected to remote host at [{self.host}:{self.port}]."))
+            print(get_logging("success", f"Connected to remote host at [{self.host}:{self.port}]"))
 
         self.socket.setblocking(False)
 
