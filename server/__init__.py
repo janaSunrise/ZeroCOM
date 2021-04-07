@@ -4,13 +4,17 @@ import threading
 import time
 import typing as t
 
+from Crypto.Hash import SHA256
+from Crypto.PublicKey import RSA
+from Crypto.Signature import PKCS1_v1_5
+
 from utils.config import HEADER_LENGTH
 from utils.logger import get_logging, get_message_logging
 from utils.utils import get_color, on_startup
 
 
 class Client:
-    def __init__(self, sock: socket.socket, address: list, uname: dict) -> None:
+    def __init__(self, sock: socket.socket, address: list, uname: dict, pub_key: dict) -> None:
         self.socket = sock
         self.ip = address[0]
         self.port = address[1]
@@ -19,6 +23,11 @@ class Client:
         self.username_header = uname["header"]
         self.raw_username = uname["data"]
         self.username = self.raw_username.decode("utf-8")
+
+        if pub_key:
+            self.pub_key_header = pub_key['header']
+            self.pub_key_pem = pub_key['data']
+            self.pub_key = RSA.import_key(self.pub_key_pem)
 
     @staticmethod
     def get_header(message: str) -> bytes:
@@ -94,11 +103,14 @@ class Server(threading.Thread):
         socket_, address = self.socket.accept()
 
         uname = self.receive_message(socket_)
+        pub_key = self.receive_message(socket_)
 
-        client = Client(socket_, address, uname)
+        client = Client(socket_, address, uname, pub_key)
 
         if not uname:
             print(get_logging("error", f"New connection failed from {client.address}."))
+        elif not pub_key:
+            print(get_logging("error", f"New connection failed from {client.address}. No key auth done."))
         else:
             self.sockets_list.append(socket_)
             self.clients[socket_] = client
@@ -118,8 +130,9 @@ class Server(threading.Thread):
                     client_socket.send(sender_information + message_to_send)
 
         message = self.receive_message(socket_)
+        sign = self.receive_message(socket_)
 
-        if not message:
+        if not message or not sign:
             client = self.clients[socket_]
 
             print(get_logging("error", f"Connection closed [{client.username}@{client.address}]."))
@@ -132,5 +145,26 @@ class Server(threading.Thread):
         client = self.clients[socket_]
         msg = message['data'].decode('utf-8')
 
-        print(get_message_logging(client.username, msg))
-        broadcast(message)
+        try:
+            signer = PKCS1_v1_5.new(client.pub_key)
+
+            digest = SHA256.new()
+            digest.update(message["data"])
+
+            if signer.verify(digest, sign["data"]):
+                msg = message['data'].decode('utf-8')
+
+                print(get_message_logging(client.username, msg))
+                broadcast(message)
+        except Exception:
+            print(get_logging(
+                "warning", f'Received incorrect verification from {client.address} [{client.username}] | '
+                           f'message:{message["data"].decode("utf-8")})'
+            ))
+
+            warning = {
+                "data": "Messaging failed from user due to incorrect verification.".encode("utf-8")
+            }
+            warning["header"] = client.get_header(warning["data"])
+            broadcast(warning)
+            return False
