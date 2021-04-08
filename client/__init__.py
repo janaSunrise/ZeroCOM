@@ -3,7 +3,6 @@ import sys
 import time
 import typing as t
 
-from Crypto import Random
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
@@ -24,8 +23,7 @@ class Client:
         self.start_timer = time.perf_counter()
         self.startup_duration = None
 
-        random_generator = Random.new().read
-        key = RSA.generate(2048, random_generator)
+        key = RSA.generate(2048)
         self.PRIVATE_KEY = key
         self.PUBLIC_KEY = key.public_key()
 
