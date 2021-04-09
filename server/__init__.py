@@ -23,8 +23,8 @@ class Client:
 
     def __init__(self, sock: socket.socket, address: list, uname: dict, pub_key: dict) -> None:
         self.socket = sock
-        self.ip = address[0]
-        self.port = address[1]
+
+        self.ip, self.port = address
         self.address = f"{address[0]}:{address[1]}"
 
         self.username_header = uname["header"]
@@ -32,8 +32,8 @@ class Client:
         self.username = self.raw_username.decode("utf-8")
 
         if pub_key:
-            self.pub_key_header = pub_key['header']
-            self.pub_key_pem = pub_key['data']
+            self.pub_key_header = pub_key["header"]
+            self.pub_key_pem = pub_key["data"]
             self.pub_key = RSA.import_key(self.pub_key_pem)
 
     @staticmethod
