@@ -125,7 +125,6 @@ class Server(threading.Thread):
 
     def process_connection(self) -> None:
         socket_, address = self.socket.accept()
-        socket_.setblocking(False)  # Stop blocking.
 
         uname = self.receive_message(socket_)
         pub_key = self.receive_message(socket_)
@@ -135,7 +134,7 @@ class Server(threading.Thread):
         if not uname:
             print(get_logging("error", f"New connection failed from {client.address}."))
         elif not pub_key:
-            print(get_logging("error", f"New connection failed from {client.address}. No key auth done."))
+            print(get_logging("error", f"New connection failed from {client.address}. No key auth found."))
         else:
             self.sockets_list.append(socket_)
             self.clients[socket_] = client
@@ -168,7 +167,6 @@ class Server(threading.Thread):
             return False
 
         client = self.clients[socket_]
-        msg = message['data'].decode('utf-8')
 
         try:
             signer = PKCS1_v1_5.new(client.pub_key)
