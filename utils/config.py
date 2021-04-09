@@ -18,3 +18,6 @@ PORT = config_parser(CONFIG_FILE, "server", "port", int_=True)
 HEADER_LENGTH = config_parser(CONFIG_FILE, "server", "HEADER_LEN", int_=True)
 
 PASSWORD = config_parser(CONFIG_FILE, "auth", "PASSWORD")
+
+MAX_CONNECTIONS = config_parser(CONFIG_FILE, "server", "MAX_CONNECTIONS")
+MAX_CONNECTIONS = None if MAX_CONNECTIONS == "" else MAX_CONNECTIONS

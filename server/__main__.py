@@ -4,7 +4,7 @@ import sys
 import time
 
 from utils.logger import get_logging
-from utils.config import IP, PORT
+from utils.config import IP, PORT, MAX_CONNECTIONS
 from server import Server
 
 if __name__ == "__main__":
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     start = time.perf_counter()
 
     # Initialize the socket object
-    server = Server((IP, PORT))
+    server = Server((IP, PORT), MAX_CONNECTIONS)
     server.start()
 
     # Try the connection
