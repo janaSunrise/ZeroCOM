@@ -42,8 +42,7 @@ def on_startup(name: str, boot_duration: float = None, ip: str = None, port: str
     version = "v" + version if version != "" else "Version not found."
 
     clear_screen()
-    message = dedent(f"""
-    {BANNER}
+    message = dedent(f"""{BANNER}
     {get_bright_color("GREEN")}ZeroCOM {name} Running. | {get_bright_color("YELLOW")}{version}
     {f"{get_bright_color('CYAN')}Running on [IP] {ip} | [PORT] {port}" if ip is not None and port is not None else ""}
     {f"{get_bright_color('YELLOW')}TOOK {boot_duration}ms to start." if boot_duration is not None else ""}
