@@ -86,7 +86,7 @@ class Server(threading.Thread):
             if not self.backlog:
                 self.socket.listen()
             else:
-                self.socket.listen(self.backlog)
+                self.socket.listen(int(self.backlog))
 
             self.sockets_list.append(self.socket)
 
