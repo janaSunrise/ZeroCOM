@@ -15,6 +15,12 @@ from utils.utils import get_color, on_startup
 
 
 class Client:
+    __slots__ = (
+        'socket', 'ip', 'port', 'address',
+        'username_header', 'raw_username', 'username',
+        'pub_key_header', 'pub_key_pem', 'pub_key'
+    )
+
     def __init__(self, sock: socket.socket, address: list, uname: dict, pub_key: dict) -> None:
         self.socket = sock
         self.ip = address[0]
@@ -36,14 +42,20 @@ class Client:
 
 
 class Server(threading.Thread):
+    __slots__ = (
+        'socket_list', 'clients',
+        'host', 'port', 'socket',
+        'start_timer', 'startup_duration',
+        'backlog'
+    )
+
     def __init__(self, address: tuple, backlog: t.Optional[int] = None) -> None:
         super().__init__()
 
         self.sockets_list = []
         self.clients = {}
 
-        self.host = address[0]
-        self.port = address[1]
+        self.host, self.port = address
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if os.name == "posix":

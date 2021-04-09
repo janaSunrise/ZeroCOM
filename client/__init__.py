@@ -13,6 +13,12 @@ from utils.utils import on_startup
 
 
 class Client:
+    __slots__ = (
+        'host', 'port', 'username',
+        'socket', 'start_timer', 'startup_duration',
+        'PRIVATE_KEY', 'PUBLIC_KEY'
+    )
+
     def __init__(self, address: tuple, username: str) -> None:
         self.host = address[0]
         self.port = address[1]
