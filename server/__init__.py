@@ -1,3 +1,4 @@
+import os
 import socket
 import sys
 import threading
@@ -45,7 +46,8 @@ class Server(threading.Thread):
         self.port = address[1]
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        if os.name == "posix":
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # REUSE_ADDR works diff on windows.
 
         self.start_timer = time.perf_counter()
         self.startup_duration = None
@@ -54,8 +56,11 @@ class Server(threading.Thread):
         try:
             self.socket.bind((self.host, self.port))
         except OSError:
+            self.socket.close()
+
             on_startup("Server")
             print(get_logging("error", "Server could not be initialized. Check the PORT."))
+
             sys.exit(1)
         else:
             end = time.perf_counter()
@@ -101,6 +106,7 @@ class Server(threading.Thread):
 
     def process_connection(self) -> None:
         socket_, address = self.socket.accept()
+        socket_.setblocking(False)  # Stop blocking.
 
         uname = self.receive_message(socket_)
         pub_key = self.receive_message(socket_)
@@ -121,11 +127,11 @@ class Server(threading.Thread):
             ))
 
     def process_message(self, socket_) -> bool:
-        def broadcast(message: dict) -> None:
+        def broadcast(msg: dict) -> None:
             for client_socket in self.clients:
                 if client_socket != socket_:
                     sender_information = client.username_header + client.raw_username
-                    message_to_send = message["header"] + message["data"]
+                    message_to_send = msg["header"] + msg["data"]
 
                     client_socket.send(sender_information + message_to_send)
 
