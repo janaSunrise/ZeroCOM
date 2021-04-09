@@ -36,7 +36,7 @@ class Client:
 
 
 class Server(threading.Thread):
-    def __init__(self, address: tuple) -> None:
+    def __init__(self, address: tuple, backlog: t.Optional[int] = None) -> None:
         super().__init__()
 
         self.sockets_list = []
@@ -51,6 +51,8 @@ class Server(threading.Thread):
 
         self.start_timer = time.perf_counter()
         self.startup_duration = None
+
+        self.backlog = backlog
 
     def connect(self) -> None:
         try:
@@ -67,7 +69,12 @@ class Server(threading.Thread):
             duration = round((end - self.start_timer) * 1000, 2)
 
             on_startup("Server", duration, ip=self.host, port=self.port)
-            self.socket.listen()
+
+            # Listening backlog
+            if not self.backlog:
+                self.socket.listen()
+            else:
+                self.socket.listen(self.backlog)
 
             self.sockets_list.append(self.socket)
 
