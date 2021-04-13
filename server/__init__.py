@@ -88,6 +88,8 @@ class Server(threading.Thread):
             else:
                 self.socket.listen(int(self.backlog))
 
+            self.socket.setblocking(False)
+
             self.sockets_list.append(self.socket)
 
             print(get_logging("success", "Server started. Listening for connections."))
