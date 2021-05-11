@@ -10,8 +10,10 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 
 from utils.config import HEADER_LENGTH
-from utils.logger import get_logging, get_message_logging
+from utils.logger import Logger
 from utils.utils import get_color, on_startup
+
+logger = Logger()
 
 
 class Client:
@@ -73,7 +75,7 @@ class Server(threading.Thread):
             self.socket.close()
 
             on_startup("Server")
-            print(get_logging("error", "Server could not be initialized. Check the PORT."))
+            logger.error("Server could not be initialized. Check the PORT.")
 
             sys.exit(1)
         else:
@@ -92,7 +94,7 @@ class Server(threading.Thread):
 
             self.sockets_list.append(self.socket)
 
-            print(get_logging("success", "Server started. Listening for connections."))
+            logger.success("Server started. Listening for connections.")
 
     def disconnect(self) -> None:
         for socket_ in self.sockets_list:
@@ -101,12 +103,7 @@ class Server(threading.Thread):
     def remove_errored_sockets(self, errored_sockets: list) -> None:
         for socket_ in errored_sockets:
             client = self.clients[socket_]
-            print(
-                get_logging(
-                    "warning",
-                    f"{get_color('YELLOW')}Exception occurred. Location {client.username} [{client.address}]"
-                )
-            )
+            logger.warning(f"{get_color('YELLOW')}Exception occurred. Location {client.username} [{client.address}]")
 
             self.sockets_list.remove(socket_)
             del self.clients[socket_]
@@ -134,17 +131,15 @@ class Server(threading.Thread):
         client = Client(socket_, address, uname, pub_key)
 
         if not uname:
-            print(get_logging("error", f"New connection failed from {client.address}."))
+            logger.error(f"New connection failed from {client.address}.")
         elif not pub_key:
-            print(get_logging("error", f"New connection failed from {client.address}. No key auth found."))
+            logger.error(f"New connection failed from {client.address}. No key auth found.")
         else:
             self.sockets_list.append(socket_)
             self.clients[socket_] = client
-
-            print(get_logging(
-                "success",
+            logger.success(
                 f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."
-            ))
+            )
 
     def process_message(self, socket_) -> bool:
         def broadcast(msg: dict) -> None:
@@ -161,7 +156,7 @@ class Server(threading.Thread):
         if not message or not sign:
             client = self.clients[socket_]
 
-            print(get_logging("error", f"Connection closed [{client.username}@{client.address}]."))
+            logger.error(f"Connection closed [{client.username}@{client.address}].")
 
             self.sockets_list.remove(socket_)
             del self.clients[socket_]
@@ -179,13 +174,11 @@ class Server(threading.Thread):
             if signer.verify(digest, sign["data"]):
                 msg = message['data'].decode('utf-8')
 
-                print(get_message_logging(client.username, msg))
+                logger.message(client.username, msg)
                 broadcast(message)
         except Exception:
-            print(get_logging(
-                "warning", f'Received incorrect verification from {client.address} [{client.username}] | '
-                           f'message:{message["data"].decode("utf-8")})'
-            ))
+            logger.warning(f"Received incorrect verification from {client.address} [{client.username}] | "
+                           f'message:{message["data"].decode("utf-8")})')
 
             warning = {
                 "data": "Messaging failed from user due to incorrect verification.".encode("utf-8")

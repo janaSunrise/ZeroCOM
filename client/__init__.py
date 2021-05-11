@@ -8,8 +8,10 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 
 from utils.config import HEADER_LENGTH
-from utils.logger import get_logging
+from utils.logger import Logger
 from utils.utils import on_startup
+
+logger = Logger()
 
 
 class Client:
@@ -42,7 +44,7 @@ class Client:
             self.socket.connect((self.host, self.port))
         except ConnectionRefusedError:
             on_startup("Client")
-            print(get_logging("error", "Connection could not be established. Invalid HOST/PORT."))
+            logger.error("Connection could not be established. Invalid HOST/PORT.")
             sys.exit(1)
         else:
             end = time.perf_counter()
@@ -50,7 +52,7 @@ class Client:
 
             on_startup("Client", self.startup_duration)
 
-            print(get_logging("success", f"Connected to remote host at [{self.host}:{self.port}]"))
+            logger.success(f"Connected to remote host at [{self.host}:{self.port}]")
 
         self.socket.setblocking(False)
 
@@ -73,7 +75,7 @@ class Client:
         username_header = self.socket.recv(HEADER_LENGTH)
 
         if not len(username_header):
-            print("\n" + get_logging("error", "Server has closed the connection."))
+            logger.error("Server has closed the connection.")
             sys.exit(1)
 
         username_len = int(username_header.decode('utf-8').strip())

@@ -3,9 +3,11 @@ import select
 import sys
 import time
 
-from utils.logger import get_logging
+from utils.logger import Logger
 from utils.config import IP, PORT, MAX_CONNECTIONS
 from server import Server
+
+logger = Logger()
 
 if __name__ == "__main__":
     # -- Perf counter --
@@ -22,7 +24,7 @@ if __name__ == "__main__":
         try:
             ready_to_read, _, in_error = select.select(server.sockets_list, [], server.sockets_list)
         except KeyboardInterrupt:
-            print(get_logging("info", "Server stopping."))
+            logger.info("Server stopping.")
 
             start = time.perf_counter()
 
@@ -33,7 +35,7 @@ if __name__ == "__main__":
             end = time.perf_counter()
             duration = round((end - start) * 1000, 2)
 
-            print(get_logging("success", f"Server stopped successfully in {duration}s."))
+            logger.success(f"Server stopped successfully in {duration}s.")
             sys.exit(0)
 
         for socket_ in ready_to_read:

@@ -27,26 +27,91 @@ log_mapping = {
 }
 
 
-def get_logging(type_: str, log_message: str, date: bool = True) -> str:
-    message = log_mapping[type_]
-
-    if date:
+class Logger:
+    @staticmethod
+    def _append_date(message: str):
         timestamp = datetime.now()
-        timestamp = f"{get_bright_color('CYAN')}{timestamp.hour}:{timestamp.minute}:{timestamp.second}" \
+        timestamp = f"{get_bright_color('CYAN')}" \
+                    f"{timestamp.hour}:{timestamp.minute}:{timestamp.second}" \
                     f"{get_bright_color('RESET')}"
-        message = f"[{timestamp}]{message} {log_color_mapping[type_]}{log_message}"
 
-    return message
+        return f"[{timestamp}]{message}"
 
+    def error(self, message: str, date: bool = True):
+        log_type = "error"
 
-def get_message_logging(username: str, message: str, date: bool = True) -> str:
-    message_log = log_mapping["message"]
+        message_prefix = log_mapping[log_type]
 
-    if date:
-        timestamp = datetime.now()
-        timestamp = f"{get_bright_color('CYAN')}{timestamp.hour}:{timestamp.minute}:{timestamp.second}" \
-                    f"{get_bright_color('RESET')}"
-        message = f"[{timestamp}]{get_bright_color('YELLOW')} {username} {get_color('RESET')}{message_log} " \
-                  f"{get_bright_color('GREEN')}{message}"
+        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
+        if date:
+            message = self._append_date(message)
 
-    return message
+        print(message)
+
+    def warning(self, message: str, date: bool = True):
+        log_type = "warning"
+
+        message_prefix = log_mapping[log_type]
+
+        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
+        if date:
+            message = self._append_date(message)
+
+        print(message)
+
+    def message(self, username: str, message: str, date: bool = True, **kwargs):
+        log_type = "message"
+
+        message_prefix = log_mapping[log_type]
+
+        message = f"{get_bright_color('YELLOW')} {username} {get_color('RESET')}{message_prefix} " \
+                  f"{get_bright_color('CYAN')}{message}"
+
+        if date:
+            message = self._append_date(message)
+
+        print(message, **kwargs)
+
+    def success(self, message: str, date: bool = True):
+        log_type = "success"
+
+        message_prefix = log_mapping[log_type]
+
+        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
+        if date:
+            message = self._append_date(message)
+
+        print(message)
+
+    def info(self, message: str, date: bool = True):
+        log_type = "info"
+
+        message_prefix = log_mapping[log_type]
+
+        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
+        if date:
+            message = self._append_date(message)
+
+        print(message)
+
+    def critical(self, message: str, date: bool = True):
+        log_type = "critical"
+
+        message_prefix = log_mapping[log_type]
+
+        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
+        if date:
+            message = self._append_date(message)
+
+        print(message)
+
+    def flash(self, message: str, date: bool = True):
+        log_type = "flash"
+
+        message_prefix = log_mapping[log_type]
+
+        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
+        if date:
+            message = self._append_date(message)
+
+        print(message)
