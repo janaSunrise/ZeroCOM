@@ -3,9 +3,9 @@ import select
 import sys
 import time
 
-from utils.logger import Logger
-from utils.config import IP, PORT, MAX_CONNECTIONS
 from server import Server
+from utils.config import IP, PORT, MAX_CONNECTIONS
+from utils.logger import Logger
 
 logger = Logger()
 
@@ -22,7 +22,9 @@ if __name__ == "__main__":
 
     while True:
         try:
-            ready_to_read, _, in_error = select.select(server.sockets_list, [], server.sockets_list)
+            ready_to_read, _, in_error = select.select(
+                server.sockets_list, [], server.sockets_list
+            )
         except KeyboardInterrupt:
             logger.info("Server stopping.")
 

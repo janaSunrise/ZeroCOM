@@ -23,7 +23,9 @@ def clear_screen() -> None:
         os.system("clear")
 
 
-def config_parser(filename: str, section: str, variable: str, bool_: bool = False, int_: bool = False) -> t.Any:
+def config_parser(
+    filename: str, section: str, variable: str, bool_: bool = False, int_: bool = False
+) -> t.Any:
     parser = SafeConfigParser()
     parser.read(filename)
 
@@ -35,7 +37,9 @@ def config_parser(filename: str, section: str, variable: str, bool_: bool = Fals
         return parser.get(section, variable)
 
 
-def on_startup(name: str, boot_duration: float = None, ip: str = None, port: str = None) -> None:
+def on_startup(
+    name: str, boot_duration: float = None, ip: str = None, port: str = None
+) -> None:
     from .config import BANNER  # To prevent circular imports.
 
     version = config_parser("config.ini", "version", "VERSION")
@@ -43,10 +47,12 @@ def on_startup(name: str, boot_duration: float = None, ip: str = None, port: str
 
     clear_screen()
 
-    message = dedent(f"""{BANNER}
+    message = dedent(
+        f"""{BANNER}
     {get_bright_color("GREEN")}ZeroCOM {name} Running. | {get_bright_color("YELLOW")}{version}
     {f"{get_bright_color('CYAN')}Running on [IP] {ip} | [PORT] {port}" if ip is not None and port is not None else ""}
     {f"{get_bright_color('YELLOW')}TOOK {boot_duration}ms to start." if boot_duration is not None else ""}
-    """)
+    """
+    )
 
     print(message)

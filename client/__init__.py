@@ -16,9 +16,14 @@ logger = Logger()
 
 class Client:
     __slots__ = (
-        'host', 'port', 'username',
-        'socket', 'start_timer', 'startup_duration',
-        'PRIVATE_KEY', 'PUBLIC_KEY'
+        "host",
+        "port",
+        "username",
+        "socket",
+        "start_timer",
+        "startup_duration",
+        "PRIVATE_KEY",
+        "PUBLIC_KEY",
     )
 
     def __init__(self, address: tuple, username: str) -> None:
@@ -78,11 +83,11 @@ class Client:
             logger.error("Server has closed the connection.")
             sys.exit(1)
 
-        username_len = int(username_header.decode('utf-8').strip())
-        username = self.socket.recv(username_len).decode('utf-8')
+        username_len = int(username_header.decode("utf-8").strip())
+        username = self.socket.recv(username_len).decode("utf-8")
 
-        msg_length = int(self.socket.recv(HEADER_LENGTH).decode('utf-8').strip())
-        msg = self.socket.recv(msg_length).decode('utf-8')
+        msg_length = int(self.socket.recv(HEADER_LENGTH).decode("utf-8").strip())
+        msg = self.socket.recv(msg_length).decode("utf-8")
 
         return username, msg
 

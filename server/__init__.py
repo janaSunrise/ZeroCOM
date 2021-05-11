@@ -18,12 +18,21 @@ logger = Logger()
 
 class Client:
     __slots__ = (
-        'socket', 'ip', 'port', 'address',
-        'username_header', 'raw_username', 'username',
-        'pub_key_header', 'pub_key_pem', 'pub_key'
+        "socket",
+        "ip",
+        "port",
+        "address",
+        "username_header",
+        "raw_username",
+        "username",
+        "pub_key_header",
+        "pub_key_pem",
+        "pub_key",
     )
 
-    def __init__(self, sock: socket.socket, address: list, uname: dict, pub_key: dict) -> None:
+    def __init__(
+        self, sock: socket.socket, address: list, uname: dict, pub_key: dict
+    ) -> None:
         self.socket = sock
 
         self.ip, self.port = address
@@ -45,10 +54,14 @@ class Client:
 
 class Server(threading.Thread):
     __slots__ = (
-        'socket_list', 'clients',
-        'host', 'port', 'socket',
-        'start_timer', 'startup_duration',
-        'backlog'
+        "socket_list",
+        "clients",
+        "host",
+        "port",
+        "socket",
+        "start_timer",
+        "startup_duration",
+        "backlog",
     )
 
     def __init__(self, address: tuple, backlog: t.Optional[int] = None) -> None:
@@ -61,7 +74,9 @@ class Server(threading.Thread):
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if os.name == "posix":
-            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)  # REUSE_ADDR works diff on windows.
+            self.socket.setsockopt(
+                socket.SOL_SOCKET, socket.SO_REUSEADDR, 1
+            )  # REUSE_ADDR works diff on windows.
 
         self.start_timer = time.perf_counter()
         self.startup_duration = None
@@ -103,7 +118,9 @@ class Server(threading.Thread):
     def remove_errored_sockets(self, errored_sockets: list) -> None:
         for socket_ in errored_sockets:
             client = self.clients[socket_]
-            logger.warning(f"{get_color('YELLOW')}Exception occurred. Location {client.username} [{client.address}]")
+            logger.warning(
+                f"{get_color('YELLOW')}Exception occurred. Location {client.username} [{client.address}]"
+            )
 
             self.sockets_list.remove(socket_)
             del self.clients[socket_]
@@ -133,7 +150,9 @@ class Server(threading.Thread):
         if not uname:
             logger.error(f"New connection failed from {client.address}.")
         elif not pub_key:
-            logger.error(f"New connection failed from {client.address}. No key auth found.")
+            logger.error(
+                f"New connection failed from {client.address}. No key auth found."
+            )
         else:
             self.sockets_list.append(socket_)
             self.clients[socket_] = client
@@ -172,16 +191,20 @@ class Server(threading.Thread):
             digest.update(message["data"])
 
             if signer.verify(digest, sign["data"]):
-                msg = message['data'].decode('utf-8')
+                msg = message["data"].decode("utf-8")
 
                 logger.message(client.username, msg)
                 broadcast(message)
         except Exception:
-            logger.warning(f"Received incorrect verification from {client.address} [{client.username}] | "
-                           f'message:{message["data"].decode("utf-8")})')
+            logger.warning(
+                f"Received incorrect verification from {client.address} [{client.username}] | "
+                f'message:{message["data"].decode("utf-8")})'
+            )
 
             warning = {
-                "data": "Messaging failed from user due to incorrect verification.".encode("utf-8")
+                "data": "Messaging failed from user due to incorrect verification.".encode(
+                    "utf-8"
+                )
             }
             warning["header"] = client.get_header(warning["data"])
             broadcast(warning)
