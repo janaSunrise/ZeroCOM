@@ -9,7 +9,7 @@ from .utils import get_bright_color, get_color
 log_color_mapping = {
     "error": get_bright_color("RED"),
     "warning": get_bright_color("YELLOW"),
-    "message": get_bright_color("CYAN"),
+    "message": get_color("CYAN"),
     "success": get_bright_color("GREEN"),
     "info": get_bright_color("MAGENTA"),
     "critical": get_bright_color("RED") + Back.YELLOW,
