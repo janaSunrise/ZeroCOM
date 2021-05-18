@@ -24,6 +24,7 @@ class Client:
         "startup_duration",
         "PRIVATE_KEY",
         "PUBLIC_KEY",
+        "motd"
     )
 
     def __init__(self, address: tuple, username: str) -> None:
@@ -40,6 +41,8 @@ class Client:
         self.PRIVATE_KEY = key
         self.PUBLIC_KEY = key.public_key()
 
+        self.motd = None
+
     @staticmethod
     def get_header(message: bytes) -> bytes:
         return f"{len(message):<{HEADER_LENGTH}}".encode("utf-8")
@@ -55,7 +58,10 @@ class Client:
             end = time.perf_counter()
             self.startup_duration = round((end - self.start_timer) * 1000, 2)
 
-            on_startup("Client", self.startup_duration)
+            # Initialize the connection, If connected
+            self.initialize()
+
+            on_startup("Client", self.startup_duration, motd=self.motd)
 
             logger.success(f"Connected to remote host at [{self.host}:{self.port}]")
 
@@ -75,6 +81,8 @@ class Client:
         # Send the message
         self.socket.send(uname_header + uname)
         self.socket.send(public_key_header + self.PUBLIC_KEY.export_key())
+
+        self.motd = self.socket.recv(HEADER_LENGTH).decode("utf-8").strip()
 
     def receive_message(self) -> tuple:
         username_header = self.socket.recv(HEADER_LENGTH)

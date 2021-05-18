@@ -38,7 +38,7 @@ def config_parser(
 
 
 def on_startup(
-    name: str, boot_duration: float = None, ip: str = None, port: str = None
+    name: str, boot_duration: float = None, ip: str = None, port: str = None, motd: str = None
 ) -> None:
     from .config import BANNER  # To prevent circular imports.
 
@@ -49,10 +49,23 @@ def on_startup(
 
     message = dedent(
         f"""{BANNER}
-    {get_bright_color("GREEN")}ZeroCOM {name} Running. | {get_bright_color("YELLOW")}{version}
-    {f"{get_bright_color('CYAN')}Running on [IP] {ip} | [PORT] {port}" if ip is not None and port is not None else ""}
-    {f"{get_bright_color('YELLOW')}TOOK {boot_duration}ms to start." if boot_duration is not None else ""}
+    \t{get_bright_color("GREEN")}ZeroCOM {name} Running. | {get_bright_color("YELLOW")}{version}
     """
     )
+
+    if ip is not None:
+        msg = f"\t{get_bright_color('CYAN')}Running on [IP] {ip}"
+        if port is not None:
+            msg += f" | [PORT] {port}\n"
+        else:
+            msg += "\n"
+
+        message += msg
+
+    if boot_duration is not None:
+        message += f"\t{get_bright_color('YELLOW')}TOOK {boot_duration}ms to start.\n"
+
+    if motd is not None:
+        message += f"\t{get_bright_color('CYAN')}MOTD: {motd}\n"
 
     print(message)

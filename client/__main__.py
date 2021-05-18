@@ -26,9 +26,6 @@ if __name__ == "__main__":
     # Try the connection
     client.connect()
 
-    # Initialize the connection, If connected
-    client.initialize()
-
     # Print the initial message logging.
     logger.flash("Welcome to the chat. CTRL+C to disconnect. Happy chatting\n")
 

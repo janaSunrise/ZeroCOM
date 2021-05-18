@@ -9,7 +9,7 @@ from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 
-from utils.config import HEADER_LENGTH
+from utils.config import HEADER_LENGTH, MOTD
 from utils.logger import Logger
 from utils.utils import get_color, on_startup
 
@@ -83,6 +83,8 @@ class Server(threading.Thread):
 
         self.backlog = backlog
 
+        self.motd = MOTD
+
     def connect(self) -> None:
         try:
             self.socket.bind((self.host, self.port))
@@ -144,6 +146,8 @@ class Server(threading.Thread):
 
         uname = self.receive_message(socket_)
         pub_key = self.receive_message(socket_)
+
+        socket_.send(self.motd.encode("utf-8"))
 
         client = Client(socket_, address, uname, pub_key)
 

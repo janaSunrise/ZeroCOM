@@ -18,6 +18,7 @@ CONFIG_FILE = "config.ini"
 IP = config_parser(CONFIG_FILE, "server", "IP")
 PORT = config_parser(CONFIG_FILE, "server", "port", int_=True)
 HEADER_LENGTH = config_parser(CONFIG_FILE, "server", "HEADER_LEN", int_=True)
+MOTD = config_parser(CONFIG_FILE, "server", "MOTD")
 
 PASSWORD = config_parser(CONFIG_FILE, "auth", "PASSWORD")
 
