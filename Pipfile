@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 colorama = "*"
-pycryptodome = "*"
+rsa = "*"
 
 [dev-packages]
 flake8 = "*"

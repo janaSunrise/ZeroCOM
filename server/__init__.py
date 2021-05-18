@@ -5,9 +5,7 @@ import threading
 import time
 import typing as t
 
-from Crypto.Hash import SHA256
-from Crypto.PublicKey import RSA
-from Crypto.Signature import PKCS1_v1_5
+import rsa
 
 from utils.config import HEADER_LENGTH, MOTD
 from utils.logger import Logger
@@ -45,7 +43,7 @@ class Client:
         if pub_key:
             self.pub_key_header = pub_key["header"]
             self.pub_key_pem = pub_key["data"]
-            self.pub_key = RSA.import_key(self.pub_key_pem)
+            self.pub_key = rsa.PublicKey.load_pkcs1(self.pub_key_pem)
 
     @staticmethod
     def get_header(message: str) -> bytes:
@@ -155,7 +153,7 @@ class Server(threading.Thread):
             logger.error(f"New connection failed from {client.address}.")
         elif not pub_key:
             logger.error(
-                f"New connection failed from {client.address}. No key auth found."
+                f"New connection failed from {client.address}. No key auth found. {pub_key}"
             )
         else:
             self.sockets_list.append(socket_)
@@ -189,17 +187,12 @@ class Server(threading.Thread):
         client = self.clients[socket_]
 
         try:
-            signer = PKCS1_v1_5.new(client.pub_key)
-
-            digest = SHA256.new()
-            digest.update(message["data"])
-
-            if signer.verify(digest, sign["data"]):
+            if rsa.verify(message["data"], sign["data"], client.pub_key):
                 msg = message["data"].decode("utf-8")
 
                 logger.message(client.username, msg)
                 broadcast(message)
-        except Exception:
+        except rsa.pkcs1.VerificationError:
             logger.warning(
                 f"Received incorrect verification from {client.address} [{client.username}] | "
                 f'message:{message["data"].decode("utf-8")})'
@@ -212,4 +205,5 @@ class Server(threading.Thread):
             }
             warning["header"] = client.get_header(warning["data"])
             broadcast(warning)
+
             return False

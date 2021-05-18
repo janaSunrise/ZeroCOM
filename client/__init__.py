@@ -3,9 +3,7 @@ import sys
 import time
 import typing as t
 
-from Crypto.Hash import SHA256
-from Crypto.PublicKey import RSA
-from Crypto.Signature import PKCS1_v1_5
+import rsa
 
 from utils.config import HEADER_LENGTH
 from utils.logger import Logger
@@ -37,9 +35,7 @@ class Client:
         self.start_timer = time.perf_counter()
         self.startup_duration = None
 
-        key = RSA.generate(2048)
-        self.PRIVATE_KEY = key
-        self.PUBLIC_KEY = key.public_key()
+        self.PUBLIC_KEY, self.PRIVATE_KEY = rsa.newkeys(1024)
 
         self.motd = None
 
@@ -76,11 +72,12 @@ class Client:
         uname_header = self.get_header(uname)
 
         # Key auth
-        public_key_header = self.get_header(self.PUBLIC_KEY.export_key())
+        exported_public_key = rsa.PublicKey.save_pkcs1(self.PUBLIC_KEY, format="PEM")
+        public_key_header = self.get_header(exported_public_key)
 
         # Send the message
         self.socket.send(uname_header + uname)
-        self.socket.send(public_key_header + self.PUBLIC_KEY.export_key())
+        self.socket.send(public_key_header + exported_public_key)
 
         self.motd = self.socket.recv(HEADER_LENGTH).decode("utf-8").strip()
 
@@ -105,12 +102,7 @@ class Client:
             message_header = self.get_header(message)
 
             # Key auth
-            signer = PKCS1_v1_5.new(self.PRIVATE_KEY)
-
-            digest = SHA256.new()
-            digest.update(message)
-
-            priv_key_sign = signer.sign(digest)
+            priv_key_sign = rsa.sign(message, self.PRIVATE_KEY, "SHA-1")
             priv_key_sign_header = self.get_header(priv_key_sign)
 
             self.socket.send(message_header + message)
