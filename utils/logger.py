@@ -67,8 +67,7 @@ class Logger:
         message_prefix = log_mapping[log_type]
 
         message = (
-            f"{get_bright_color('YELLOW')} {username} {get_color('RESET')}{message_prefix} "
-            f"{message}"
+            f"{get_bright_color('YELLOW')} {username}{get_color('RESET')} {message_prefix} {message}"
         )
 
         if date:

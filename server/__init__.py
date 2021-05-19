@@ -38,7 +38,7 @@ class Client:
 
         self.username_header = uname["header"]
         self.raw_username = uname["data"]
-        self.username = self.raw_username.decode("utf-8")
+        self.username = self.raw_username.decode()
 
         if pub_key:
             self.pub_key_header = pub_key["header"]
@@ -47,7 +47,7 @@ class Client:
 
     @staticmethod
     def get_header(message: str) -> bytes:
-        return f"{len(message):<{HEADER_LENGTH}}".encode("utf-8")
+        return f"{len(message):<{HEADER_LENGTH}}".encode()
 
 
 class Server(threading.Thread):
@@ -118,9 +118,7 @@ class Server(threading.Thread):
     def remove_errored_sockets(self, errored_sockets: list) -> None:
         for socket_ in errored_sockets:
             client = self.clients[socket_]
-            logger.warning(
-                f"{get_color('YELLOW')}Exception occurred. Location {client.username} [{client.address}]"
-            )
+            logger.warning(f"{get_color('YELLOW')}Exception occurred. Location {client.username} [{client.address}]")
 
             self.sockets_list.remove(socket_)
             del self.clients[socket_]
@@ -133,7 +131,7 @@ class Server(threading.Thread):
             if not len(message_header):
                 return False
 
-            message_length = int(message_header.decode("utf-8").strip())
+            message_length = int(message_header.decode().strip())
 
             return {"header": message_header, "data": socket_.recv(message_length)}
         except Exception:
@@ -145,39 +143,38 @@ class Server(threading.Thread):
         uname = self.receive_message(socket_)
         pub_key = self.receive_message(socket_)
 
-        socket_.send(self.motd.encode("utf-8"))
-
         client = Client(socket_, address, uname, pub_key)
 
         if not uname:
             logger.error(f"New connection failed from {client.address}.")
         elif not pub_key:
-            logger.error(
-                f"New connection failed from {client.address}. No key auth found. {pub_key}"
-            )
+            logger.error(f"New connection failed from {client.address}. No key auth found. {pub_key}")
         else:
             self.sockets_list.append(socket_)
             self.clients[socket_] = client
+
+            client.socket.send(self.motd.encode())
+
             logger.success(
                 f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."
             )
 
     def process_message(self, socket_) -> bool:
-        def broadcast(msg: dict) -> None:
+        def broadcast(message: dict) -> None:
             for client_socket in self.clients:
                 if client_socket != socket_:
                     sender_information = client.username_header + client.raw_username
-                    message_to_send = msg["header"] + msg["data"]
+                    message_to_send = message["header"] + message["data"]
 
                     client_socket.send(sender_information + message_to_send)
 
-        message = self.receive_message(socket_)
         sign = self.receive_message(socket_)
+        message = self.receive_message(socket_)
 
         if not message or not sign:
             client = self.clients[socket_]
 
-            logger.error(f"Connection closed [{client.username}@{client.address}].")
+            logger.error(f"Connection closed [{client.username}@{client.address}]")
 
             self.sockets_list.remove(socket_)
             del self.clients[socket_]
@@ -188,20 +185,18 @@ class Server(threading.Thread):
 
         try:
             if rsa.verify(message["data"], sign["data"], client.pub_key):
-                msg = message["data"].decode("utf-8")
+                msg = message["data"].decode()
 
                 logger.message(client.username, msg)
                 broadcast(message)
         except rsa.pkcs1.VerificationError:
             logger.warning(
                 f"Received incorrect verification from {client.address} [{client.username}] | "
-                f'message:{message["data"].decode("utf-8")})'
+                f"message:{message['data'].decode()})"
             )
 
             warning = {
-                "data": "Messaging failed from user due to incorrect verification.".encode(
-                    "utf-8"
-                )
+                "data": "Messaging failed from user due to incorrect verification.".encode()
             }
             warning["header"] = client.get_header(warning["data"])
             broadcast(warning)

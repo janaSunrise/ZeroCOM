@@ -41,7 +41,7 @@ class Client:
 
     @staticmethod
     def get_header(message: bytes) -> bytes:
-        return f"{len(message):<{HEADER_LENGTH}}".encode("utf-8")
+        return f"{len(message):<{HEADER_LENGTH}}".encode()
 
     def connect(self) -> None:
         try:
@@ -68,7 +68,7 @@ class Client:
 
     def initialize(self) -> None:
         # Send the specified uname.
-        uname = self.username.encode("utf-8")
+        uname = self.username.encode()
         uname_header = self.get_header(uname)
 
         # Key auth
@@ -79,7 +79,7 @@ class Client:
         self.socket.send(uname_header + uname)
         self.socket.send(public_key_header + exported_public_key)
 
-        self.motd = self.socket.recv(HEADER_LENGTH).decode("utf-8").strip()
+        self.motd = self.socket.recv(HEADER_LENGTH).decode().strip()
 
     def receive_message(self) -> tuple:
         username_header = self.socket.recv(HEADER_LENGTH)
@@ -88,22 +88,22 @@ class Client:
             logger.error("Server has closed the connection.")
             sys.exit(1)
 
-        username_len = int(username_header.decode("utf-8").strip())
-        username = self.socket.recv(username_len).decode("utf-8")
+        username_len = int(username_header.decode().strip())
+        username = self.socket.recv(username_len).decode()
 
-        msg_length = int(self.socket.recv(HEADER_LENGTH).decode("utf-8").strip())
-        msg = self.socket.recv(msg_length).decode("utf-8")
+        msg_length = int(self.socket.recv(HEADER_LENGTH).decode().strip())
+        msg = self.socket.recv(msg_length).decode()
 
         return username, msg
 
     def send_message(self, message: t.Optional[str] = None) -> None:
         if message:
-            message = message.replace("\n", "").encode("utf-8")
+            message = message.replace("\n", "").encode()
             message_header = self.get_header(message)
 
             # Key auth
             priv_key_sign = rsa.sign(message, self.PRIVATE_KEY, "SHA-1")
             priv_key_sign_header = self.get_header(priv_key_sign)
 
-            self.socket.send(message_header + message)
             self.socket.send(priv_key_sign_header + priv_key_sign)
+            self.socket.send(message_header + message)
