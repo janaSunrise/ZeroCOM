@@ -42,19 +42,19 @@ def on_startup(
 ) -> None:
     from .config import BANNER  # To prevent circular imports.
 
+    spaces_4 = "    "
+
     version = config_parser("config.ini", "version", "VERSION")
     version = "v" + version if version != "" else "Version not found."
 
     clear_screen()
 
-    message = dedent(
-        f"""{BANNER}
-    \t{get_bright_color("GREEN")}ZeroCOM {name} Running. | {get_bright_color("YELLOW")}{version}
-    """
-    )
+    message = dedent(f"""{BANNER}
+    {get_bright_color("GREEN")}ZeroCOM {name} Running. | {get_bright_color("YELLOW")}{version}
+    """)
 
     if ip is not None:
-        msg = f"\t{get_bright_color('CYAN')}Running on [IP] {ip}"
+        msg = f"{spaces_4}{get_bright_color('CYAN')}Running on [IP] {ip}"
         if port is not None:
             msg += f" | [PORT] {port}\n"
         else:
@@ -63,9 +63,9 @@ def on_startup(
         message += msg
 
     if boot_duration is not None:
-        message += f"\t{get_bright_color('YELLOW')}TOOK {boot_duration}ms to start.\n"
+        message += f"{spaces_4}{get_bright_color('YELLOW')}TOOK {boot_duration}ms to start.\n"
 
     if motd is not None:
-        message += f"\t{get_bright_color('CYAN')}MOTD: {motd}\n"
+        message += f"{spaces_4}{get_bright_color('CYAN')}MOTD: {motd}\n"
 
     print(message)

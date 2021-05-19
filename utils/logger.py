@@ -37,7 +37,7 @@ class Logger:
             f"{get_bright_color('RESET')}"
         )
 
-        return f"{get_bright_color('WHITE')}[{timestamp}]{message}"
+        return f"[{timestamp}]{message}"
 
     def error(self, message: str, date: bool = True):
         log_type = "error"
@@ -68,7 +68,7 @@ class Logger:
 
         message = (
             f"{get_bright_color('YELLOW')} {username} {get_color('RESET')}{message_prefix} "
-            f"{get_bright_color('CYAN')}{message}"
+            f"{message}"
         )
 
         if date:
