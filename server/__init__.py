@@ -153,7 +153,13 @@ class Server(threading.Thread):
             self.sockets_list.append(socket_)
             self.clients[socket_] = client
 
-            client.socket.send(self.motd.encode())
+            # ----- Send the data to Client ---- #
+            motd = self.motd.encode()
+            motd_header = client.get_header(motd)
+
+            client.socket.send(motd_header + motd)
+
+            # ---------------------------------- #
 
             logger.success(
                 f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."

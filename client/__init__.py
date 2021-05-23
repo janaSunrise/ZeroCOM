@@ -35,7 +35,7 @@ class Client:
         self.start_timer = time.perf_counter()
         self.startup_duration = None
 
-        self.PUBLIC_KEY, self.PRIVATE_KEY = rsa.newkeys(1024)
+        self.PUBLIC_KEY, self.PRIVATE_KEY = rsa.newkeys(512)
 
         self.motd = None
 
@@ -79,7 +79,8 @@ class Client:
         self.socket.send(uname_header + uname)
         self.socket.send(public_key_header + exported_public_key)
 
-        self.motd = self.socket.recv(HEADER_LENGTH).decode().strip()
+        motd_len = int(self.socket.recv(HEADER_LENGTH).decode().strip())
+        self.motd = self.socket.recv(motd_len).decode().strip()
 
     def receive_message(self) -> tuple:
         username_header = self.socket.recv(HEADER_LENGTH)
