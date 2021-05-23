@@ -36,10 +36,12 @@ python -m client <SERVER_IP> <PORT> <USERNAME> <PASSWORD>
 
 ## Future plans
 
-- [ ] Better logging.
+- [x] Better logging.
 - [ ] Improved Client chat features, and usage.
 - [ ] Password based server encryption
-- [ ] Public, Private Key verification, using RSA and SHA-256 pairs.
+- [x] Public, Private Key verification, using RSA and SHA-256 pairs.
+- [ ] End to End Message Encryption and Decryption
+- [ ] [BUG FIX] Remote server functioning doesn't work.
 
 ## 🤝 Contributing
 
@@ -61,11 +63,6 @@ If you have various suggestions, questions or want to discuss things wit our com
 
 We love people's support in growing and improving. Be sure to leave a ⭐️ if you like the project and 
 also be sure to contribute, if you're interested!
-
-## License
-
-[GPL V3](https://github.com/janaSunrise/ZeroCOM/blob/main/LICENSE)
-
 
 <div align="center">
   Made by Sunrit Jana with ❤️
