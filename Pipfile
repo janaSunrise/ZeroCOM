@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 colorama = "*"
 rsa = "*"
+rich = "*"
 
 [dev-packages]
 flake8 = "*"

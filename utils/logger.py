@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from colorama import Back
+from rich.console import Console
 
 from .utils import get_bright_color, get_color
 
@@ -28,6 +29,9 @@ log_mapping = {
 
 
 class Logger:
+    def __init__(self):
+        self._console = Console()
+
     @staticmethod
     def _append_date(message: str):
         timestamp = datetime.now()
@@ -66,14 +70,13 @@ class Logger:
 
         message_prefix = log_mapping[log_type]
 
-        message = (
-            f"{get_bright_color('YELLOW')} {username}{get_color('RESET')} {message_prefix} {message}"
-        )
+        message_pre = f"{get_bright_color('YELLOW')} {username}{get_color('RESET')} {message_prefix} "
 
         if date:
-            message = self._append_date(message)
+            message_pre = self._append_date(message_pre)
 
-        print(message, **kwargs)
+        print(message_pre, end="")
+        self._console.print(message, **kwargs)
 
     def success(self, message: str, date: bool = True):
         log_type = "success"

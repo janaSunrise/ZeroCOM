@@ -34,12 +34,46 @@ Here's how you can login to the server, by running the client like this.
 python -m client <SERVER_IP> <PORT> <USERNAME> <PASSWORD>
 ```
 
+#### Message formatting
+
+Yes, You heard that right! We support user based message formatting. If you want 
+to express yourself better, That's now possible!
+
+What can you do?
+- Change color of message / various sections of it.
+- Add markdown / formatting to messages!
+- Use emojis with the format of `:<emoji-name>:` and It's converted into an emoji!
+
+You can change color of message in following way: `[blue] Hello, world! [/]`
+
+`[<contents>][/]` are the opening, and closing tag, and the contents can have the color you want.
+
+You can also change color of a message into various sections like this: `[blue]Hi[/] [red]Hello[/]`
+
+This colors `Hi` as blue, and `Hello` as red.
+
+We support a lot of colors, use any you want to!
+
+You can also format your message, by adding "boldness", "italics", "codeblocks" and more! Here are 
+some examples:
+- Bold: `[bold]This is bold[/]`
+- Italics: `[i]This is italics[/]`
+- Underline: `[u]This is underline[/]`
+- Codeblocks: `[codeblocks]print("hello")[/]`
+
+You can combine more styles together as such: `[blue bold]This is blue and bold[/]`
+And you can also use nested tags together as following, `[blue]Blueeee [bold]bold[/bold][/blue]`
+
+And finally, You can use emojis easily! Here's a example: `Star emoji - :star:`, and `:star:` 
+gets converted into ⭐ .
+
 ## Future plans
 
-- [ ] Better logging.
+- [x] Better logging.
+- [x] Improved message coloring and formatting.
 - [ ] Improved Client chat features, and usage.
 - [ ] Password based server encryption
-- [ ] Public, Private Key verification, using RSA and SHA-256 pairs.
+- [x] Public, Private Key verification, using RSA and SHA-256 pairs.
 
 ## 🤝 Contributing
 
