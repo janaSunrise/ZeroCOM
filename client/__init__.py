@@ -4,7 +4,6 @@ import time
 import typing as t
 
 import rsa
-
 from utils.config import HEADER_LENGTH
 from utils.logger import Logger
 from utils.utils import on_startup

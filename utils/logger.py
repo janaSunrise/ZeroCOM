@@ -33,7 +33,7 @@ class Logger:
         self._console = Console()
 
     @staticmethod
-    def _append_date(message: str):
+    def _append_date(message: str) -> None:
         timestamp = datetime.now()
         timestamp = (
             f"{get_bright_color('CYAN')}"
@@ -43,7 +43,7 @@ class Logger:
 
         return f"[{timestamp}]{message}"
 
-    def error(self, message: str, date: bool = True):
+    def error(self, message: str, date: bool = True) -> None:
         log_type = "error"
 
         message_prefix = log_mapping[log_type]
@@ -54,7 +54,7 @@ class Logger:
 
         print(message)
 
-    def warning(self, message: str, date: bool = True):
+    def warning(self, message: str, date: bool = True) -> None:
         log_type = "warning"
 
         message_prefix = log_mapping[log_type]
@@ -65,7 +65,7 @@ class Logger:
 
         print(message)
 
-    def message(self, username: str, message: str, date: bool = True, **kwargs):
+    def message(self, username: str, message: str, date: bool = True, **kwargs) -> None:
         log_type = "message"
 
         message_prefix = log_mapping[log_type]
@@ -78,7 +78,7 @@ class Logger:
         print(message_pre, end="")
         self._console.print(message, **kwargs)
 
-    def success(self, message: str, date: bool = True):
+    def success(self, message: str, date: bool = True) -> None:
         log_type = "success"
 
         message_prefix = log_mapping[log_type]
@@ -89,7 +89,7 @@ class Logger:
 
         print(message)
 
-    def info(self, message: str, date: bool = True):
+    def info(self, message: str, date: bool = True) -> None:
         log_type = "info"
 
         message_prefix = log_mapping[log_type]
@@ -100,7 +100,7 @@ class Logger:
 
         print(message)
 
-    def critical(self, message: str, date: bool = True):
+    def critical(self, message: str, date: bool = True) -> None:
         log_type = "critical"
 
         message_prefix = log_mapping[log_type]
@@ -111,7 +111,7 @@ class Logger:
 
         print(message)
 
-    def flash(self, message: str, date: bool = True):
+    def flash(self, message: str, date: bool = True) -> None:
         log_type = "flash"
 
         message_prefix = log_mapping[log_type]

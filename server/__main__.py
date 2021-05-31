@@ -3,9 +3,10 @@ import select
 import sys
 import time
 
-from server import Server
-from utils.config import IP, PORT, MAX_CONNECTIONS
+from utils.config import IP, MAX_CONNECTIONS, PORT
 from utils.logger import Logger
+
+from server import Server
 
 logger = Logger()
 

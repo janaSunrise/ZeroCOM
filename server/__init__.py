@@ -6,7 +6,6 @@ import time
 import typing as t
 
 import rsa
-
 from utils.config import HEADER_LENGTH, MOTD
 from utils.logger import Logger
 from utils.utils import get_color, on_startup
@@ -124,7 +123,7 @@ class Server(threading.Thread):
             del self.clients[socket_]
 
     @staticmethod
-    def receive_message(socket_) -> t.Union[dict, bool]:
+    def receive_message(socket_: socket) -> t.Union[dict, bool]:
         try:
             message_header = socket_.recv(HEADER_LENGTH)
 
@@ -165,7 +164,7 @@ class Server(threading.Thread):
                 f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."
             )
 
-    def process_message(self, socket_) -> bool:
+    def process_message(self, socket_: socket) -> bool:
         def broadcast(message: dict) -> None:
             for client_socket in self.clients:
                 if client_socket != socket_:
