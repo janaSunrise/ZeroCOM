@@ -74,6 +74,7 @@ gets converted into ⭐ .
 - [ ] Improved Client chat features, and usage.
 - [ ] Password based server encryption
 - [x] Public, Private Key verification, using RSA and SHA-256 pairs.
+- [ ] [BUG FIX] Remote server functioning doesn't work.
 
 ## 🤝 Contributing
 
@@ -95,11 +96,6 @@ If you have various suggestions, questions or want to discuss things wit our com
 
 We love people's support in growing and improving. Be sure to leave a ⭐️ if you like the project and 
 also be sure to contribute, if you're interested!
-
-## License
-
-[GPL V3](https://github.com/janaSunrise/ZeroCOM/blob/main/LICENSE)
-
 
 <div align="center">
   Made by Sunrit Jana with ❤️
