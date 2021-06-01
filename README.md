@@ -67,14 +67,10 @@ And you can also use nested tags together as following, `[blue]Blueeee [bold]bol
 And finally, You can use emojis easily! Here's a example: `Star emoji - :star:`, and `:star:` 
 gets converted into ⭐ .
 
-## Future plans
+## Future plans, Bugs and Issues
 
-- [x] Better logging.
-- [x] Improved message coloring and formatting.
-- [ ] Improved Client chat features, and usage.
-- [ ] Password based server encryption
-- [x] Public, Private Key verification, using RSA and SHA-256 pairs.
-- [ ] [BUG FIX] Remote server functioning doesn't work.
+For the Future plans and more, check out Kanban board: https://github.com/janaSunrise/ZeroCOM/projects/
+To check the Bugs and Issues we face currently in the application, Check here: https://github.com/janaSunrise/ZeroCOM/issues
 
 ## 🤝 Contributing
 
