@@ -1,11 +1,10 @@
-# -- Imports --
 import errno
 import select
 import sys
 import time
 
-from client import Client
-from utils.logger import Logger
+from .models.client import Client
+from .utils import Logger
 
 logger = Logger()
 
@@ -25,6 +24,7 @@ if __name__ == "__main__":
 
     # Try the connection
     client.connect()
+    client.initialize()
 
     # Print the initial message logging.
     logger.flash("Welcome to the chat. CTRL+C to disconnect. Happy chatting\n")

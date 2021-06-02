@@ -4,9 +4,9 @@ from datetime import datetime
 from colorama import Back
 from rich.console import Console
 
-from .utils import get_bright_color, get_color
+from .colors import get_bright_color, get_color
 
-# -- Log mapping --
+# -- Mappings --
 log_color_mapping = {
     "error": get_bright_color("RED"),
     "warning": get_bright_color("YELLOW"),

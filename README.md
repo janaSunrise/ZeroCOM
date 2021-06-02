@@ -22,7 +22,7 @@ you want by tweaking the settings in it.
 Here's how you can run the server, so you can connect using clients.
 
 ```sh
-python -m server
+python -m app.server
 ```
 
 #### Running the client, and logging into a server
@@ -31,7 +31,7 @@ Once you have the server running, or someone has a compatible server node runnin
 Here's how you can login to the server, by running the client like this.
 
 ```sh
-python -m client <SERVER_IP> <PORT> <USERNAME> <PASSWORD>
+python -m app.client <SERVER_IP> <PORT> <USERNAME> <PASSWORD>
 ```
 
 #### Message formatting
