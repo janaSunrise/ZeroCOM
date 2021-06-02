@@ -65,7 +65,7 @@ You can combine more styles together as such: `[blue bold]This is blue and bold[
 And you can also use nested tags together as following, `[blue]Blueeee [bold]bold[/bold][/blue]`
 
 And finally, You can use emojis easily! Here's a example: `Star emoji - :star:`, and `:star:` 
-gets converted into ⭐ .
+gets converted into ⭐
 
 ## Future plans, Bugs and Issues
 
