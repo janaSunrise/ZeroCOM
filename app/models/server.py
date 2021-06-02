@@ -1,57 +1,22 @@
 import os
 import socket
 import sys
-import threading
 import time
 import typing as t
 
 import rsa
-from utils.config import HEADER_LENGTH, MOTD
-from utils.logger import Logger
-from utils.utils import get_color, on_startup
+
+from .message import Message
+from .server_side_client import Client
+from ..config import HEADER_LENGTH, MOTD
+from ..utils import get_color, on_startup, Logger
 
 logger = Logger()
 
 
-class Client:
+class Server:
     __slots__ = (
-        "socket",
-        "ip",
-        "port",
-        "address",
-        "username_header",
-        "raw_username",
-        "username",
-        "pub_key_header",
-        "pub_key_pem",
-        "pub_key",
-    )
-
-    def __init__(
-        self, sock: socket.socket, address: list, uname: dict, pub_key: dict
-    ) -> None:
-        self.socket = sock
-
-        self.ip, self.port = address
-        self.address = f"{address[0]}:{address[1]}"
-
-        self.username_header = uname["header"]
-        self.raw_username = uname["data"]
-        self.username = self.raw_username.decode()
-
-        if pub_key:
-            self.pub_key_header = pub_key["header"]
-            self.pub_key_pem = pub_key["data"]
-            self.pub_key = rsa.PublicKey.load_pkcs1(self.pub_key_pem)
-
-    @staticmethod
-    def get_header(message: str) -> bytes:
-        return f"{len(message):<{HEADER_LENGTH}}".encode()
-
-
-class Server(threading.Thread):
-    __slots__ = (
-        "socket_list",
+        "sockets_list",
         "clients",
         "host",
         "port",
@@ -59,37 +24,42 @@ class Server(threading.Thread):
         "start_timer",
         "startup_duration",
         "backlog",
+        "motd"
     )
 
     def __init__(self, address: tuple, backlog: t.Optional[int] = None) -> None:
-        super().__init__()
-
+        # List of sockets and clients
         self.sockets_list = []
         self.clients = {}
 
+        # Address to run the server on
         self.host, self.port = address
 
+        # Initialize the main sockets.
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if os.name == "posix":
             self.socket.setsockopt(
                 socket.SOL_SOCKET, socket.SO_REUSEADDR, 1
             )  # REUSE_ADDR works diff on windows.
 
+        # Initialize startup timer and calculate duration
         self.start_timer = time.perf_counter()
         self.startup_duration = None
 
+        # Get the backlog (Max number of connections at a time)
         self.backlog = backlog
 
+        # MOTD of the server
         self.motd = MOTD
 
     def connect(self) -> None:
         try:
             self.socket.bind((self.host, self.port))
-        except OSError:
+        except OSError as exc:
             self.socket.close()
 
             on_startup("Server")
-            logger.error("Server could not be initialized. Check the PORT.")
+            logger.error(f"Server could not be initialized. Error: {exc}")
 
             sys.exit(1)
         else:
@@ -104,8 +74,10 @@ class Server(threading.Thread):
             else:
                 self.socket.listen(int(self.backlog))
 
+            # Set socket to non-blocking
             self.socket.setblocking(False)
 
+            # Add socket to the list of sockets.
             self.sockets_list.append(self.socket)
 
             logger.success("Server started. Listening for connections.")
@@ -117,24 +89,23 @@ class Server(threading.Thread):
     def remove_errored_sockets(self, errored_sockets: list) -> None:
         for socket_ in errored_sockets:
             client = self.clients[socket_]
-            logger.warning(f"{get_color('YELLOW')}Exception occurred. Location {client.username} [{client.address}]")
+            logger.warning(f"{get_color('YELLOW')}Exception occurred. Location: {client.username} [{client.address}]")
 
             self.sockets_list.remove(socket_)
             del self.clients[socket_]
 
     @staticmethod
-    def receive_message(socket_: socket) -> t.Union[dict, bool]:
+    def receive_message(socket_: socket) -> t.Optional[Message]:
         try:
             message_header = socket_.recv(HEADER_LENGTH)
-
             if not len(message_header):
-                return False
+                return
 
             message_length = int(message_header.decode().strip())
 
-            return {"header": message_header, "data": socket_.recv(message_length)}
+            return Message(message_header, socket_.recv(message_length))
         except Exception:
-            return False
+            return
 
     def process_connection(self) -> None:
         socket_, address = self.socket.accept()
@@ -144,6 +115,8 @@ class Server(threading.Thread):
 
         client = Client(socket_, address, uname, pub_key)
 
+        logger.info(pub_key)
+
         if not uname:
             logger.error(f"New connection failed from {client.address}.")
         elif not pub_key:
@@ -152,24 +125,23 @@ class Server(threading.Thread):
             self.sockets_list.append(socket_)
             self.clients[socket_] = client
 
-            # ----- Send the data to Client ---- #
+            # Send the data to Client
             motd = self.motd.encode()
             motd_header = client.get_header(motd)
 
             client.socket.send(motd_header + motd)
-
-            # ---------------------------------- #
+            logger.info("Sent!")
 
             logger.success(
                 f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."
             )
 
     def process_message(self, socket_: socket) -> bool:
-        def broadcast(message: dict) -> None:
+        def broadcast(message: Message) -> None:
             for client_socket in self.clients:
                 if client_socket != socket_:
                     sender_information = client.username_header + client.raw_username
-                    message_to_send = message["header"] + message["data"]
+                    message_to_send = message.header + message.data
 
                     client_socket.send(sender_information + message_to_send)
 
@@ -189,21 +161,19 @@ class Server(threading.Thread):
         client = self.clients[socket_]
 
         try:
-            if rsa.verify(message["data"], sign["data"], client.pub_key):
-                msg = message["data"].decode()
+            if rsa.verify(message.data, sign.data, client.pub_key):
+                msg = message.data.decode()
 
                 logger.message(client.username, msg)
                 broadcast(message)
         except rsa.pkcs1.VerificationError:
             logger.warning(
                 f"Received incorrect verification from {client.address} [{client.username}] | "
-                f"message:{message['data'].decode()})"
+                f"message:{message.data.decode()})"
             )
 
-            warning = {
-                "data": "Messaging failed from user due to incorrect verification.".encode()
-            }
-            warning["header"] = client.get_header(warning["data"])
+            warning = Message(None, "Messaging failed from user due to incorrect verification.".encode())
+            warning.header = client.get_header(warning.data)
             broadcast(warning)
 
             return False

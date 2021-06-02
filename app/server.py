@@ -1,12 +1,10 @@
-# -- Imports --
 import select
 import sys
 import time
 
-from utils.config import IP, MAX_CONNECTIONS, PORT
-from utils.logger import Logger
-
-from server import Server
+from .config import IP, MAX_CONNECTIONS, PORT
+from .models.server import Server
+from .utils import Logger
 
 logger = Logger()
 
@@ -16,7 +14,6 @@ if __name__ == "__main__":
 
     # Initialize the socket object
     server = Server((IP, PORT), MAX_CONNECTIONS)
-    server.start()
 
     # Try the connection
     server.connect()

@@ -3,10 +3,9 @@ import sys
 import time
 import typing as t
 
-import rsa
-from utils.config import HEADER_LENGTH
-from utils.logger import Logger
-from utils.utils import on_startup
+from .encryption import RSA
+from ..config import HEADER_LENGTH
+from ..utils import on_startup, Logger
 
 logger = Logger()
 
@@ -34,7 +33,7 @@ class Client:
         self.start_timer = time.perf_counter()
         self.startup_duration = None
 
-        self.PUBLIC_KEY, self.PRIVATE_KEY = rsa.newkeys(512)
+        self.PUBLIC_KEY, self.PRIVATE_KEY = RSA.generate_keys(512)
 
         self.motd = None
 
@@ -49,18 +48,6 @@ class Client:
             on_startup("Client")
             logger.error("Connection could not be established. Invalid HOST/PORT.")
             sys.exit(1)
-        else:
-            end = time.perf_counter()
-            self.startup_duration = round((end - self.start_timer) * 1000, 2)
-
-            # Initialize the connection, If connected
-            self.initialize()
-
-            on_startup("Client", self.startup_duration, motd=self.motd)
-
-            logger.success(f"Connected to remote host at [{self.host}:{self.port}]")
-
-        self.socket.setblocking(False)
 
     def disconnect(self) -> None:
         self.socket.close()
@@ -71,7 +58,7 @@ class Client:
         uname_header = self.get_header(uname)
 
         # Key auth
-        exported_public_key = rsa.PublicKey.save_pkcs1(self.PUBLIC_KEY, format="PEM")
+        exported_public_key = RSA.export_key_pkcs1(self.PUBLIC_KEY, "PEM")
         public_key_header = self.get_header(exported_public_key)
 
         # Send the message
@@ -80,6 +67,17 @@ class Client:
 
         motd_len = int(self.socket.recv(HEADER_LENGTH).decode().strip())
         self.motd = self.socket.recv(motd_len).decode().strip()
+
+        # Initialize logic
+        end = time.perf_counter()
+        self.startup_duration = round((end - self.start_timer) * 1000, 2)
+
+        on_startup("Client", self.startup_duration, motd=self.motd)
+
+        logger.success(f"Connected to remote host at [{self.host}:{self.port}]")
+
+        # Set blocking to false.
+        self.socket.setblocking(False)
 
     def receive_message(self) -> tuple:
         username_header = self.socket.recv(HEADER_LENGTH)
@@ -102,7 +100,7 @@ class Client:
             message_header = self.get_header(message)
 
             # Key auth
-            priv_key_sign = rsa.sign(message, self.PRIVATE_KEY, "SHA-1")
+            priv_key_sign = RSA.sign_message(message, self.PRIVATE_KEY)
             priv_key_sign_header = self.get_header(priv_key_sign)
 
             self.socket.send(priv_key_sign_header + priv_key_sign)
