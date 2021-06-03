@@ -5,7 +5,7 @@ import typing as t
 
 from .encryption import RSA
 from ..config import HEADER_LENGTH
-from ..utils import on_startup, Logger
+from ..utils import Logger, on_startup
 
 logger = Logger()
 

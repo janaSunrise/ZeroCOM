@@ -9,7 +9,7 @@ import rsa
 from .message import Message
 from .server_side_client import Client
 from ..config import HEADER_LENGTH, MOTD
-from ..utils import get_color, on_startup, Logger
+from ..utils import Logger, get_color, on_startup
 
 logger = Logger()
 
