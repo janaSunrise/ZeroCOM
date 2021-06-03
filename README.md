@@ -13,13 +13,14 @@ pipenv sync -d
 
 ## Usage
 
-The server is configured to run in `127.0.0.1` in the port `5700`. The project uses a `.ini`
-configuration file to config it, which is located at `config.ini`. You can configure as
-you want by tweaking the settings in it.
+The server is configured to run in `127.0.0.1` in the port `5700` by default. 
+
+The project uses a `.ini`configuration file to config it, which is located at `config.ini`. 
+You can configure as you want by tweaking the settings in it.
 
 #### Running the server
 
-Here's how you can run the server, so you can connect using clients.
+Here's how you can run the server so you can connect using clients.
 
 ```sh
 python -m app.server
@@ -27,8 +28,8 @@ python -m app.server
 
 #### Running the client, and logging into a server
 
-Once you have the server running, or someone has a compatible server node running,
-Here's how you can login to the server, by running the client like this.
+Once you have the server running, or someone else has a ZeroCom server running,
+Here's how you can login to the server by running the client like this.
 
 ```sh
 python -m app.client <SERVER_IP> <PORT> <USERNAME> <PASSWORD>
