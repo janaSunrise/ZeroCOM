@@ -13,10 +13,12 @@ pipenv sync -d
 
 ## Usage
 
-The server is configured to run in `127.0.0.1` in the port `5700` by default. 
+The server uses a configuration file (`config.ini`) located in the root of the project to
+run it. It is configured to run in `127.0.0.1:5700` TCP port by default. You can change things 
+as you need and configure according to you.
 
-The project uses a `.ini`configuration file to config it, which is located at `config.ini`. 
-You can configure as you want by tweaking the settings in it.
+To connect to the ZeroCom server, It is essential to have a ZeroCom client to establish
+connection and use it.
 
 #### Running the server
 
