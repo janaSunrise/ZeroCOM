@@ -27,7 +27,7 @@ if __name__ == "__main__":
     client.initialize()
 
     # Print the initial message logging.
-    logger.flash("Welcome to the chat. CTRL+C to disconnect. Happy chatting\n")
+    logger.flash("Welcome to the chat. CTRL+C to disconnect. Happy chatting!\n")
 
     logger.message("ME", "", end="")
 

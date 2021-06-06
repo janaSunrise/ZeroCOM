@@ -33,7 +33,7 @@ class Logger:
         self._console = Console()
 
     @staticmethod
-    def _append_date(message: str) -> None:
+    def _append_date(message: str) -> str:
         timestamp = datetime.now()
         timestamp = (
             f"{get_bright_color('CYAN')}"
