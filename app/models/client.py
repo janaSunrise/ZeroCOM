@@ -52,6 +52,14 @@ class Client:
     def disconnect(self) -> None:
         self.socket.close()
 
+    def display_connected_banner(self) -> None:
+        end = time.perf_counter()
+        self.startup_duration = round((end - self.start_timer) * 1000, 2)
+
+        on_startup("Client", self.startup_duration, motd=self.motd)
+
+        logger.success(f"Connected to remote host at [{self.host}:{self.port}]")
+
     def initialize(self) -> None:
         # Send the specified uname.
         uname = self.username.encode()
@@ -68,13 +76,7 @@ class Client:
         motd_len = int(self.socket.recv(HEADER_LENGTH).decode().strip())
         self.motd = self.socket.recv(motd_len).decode().strip()
 
-        # Initialize logic
-        end = time.perf_counter()
-        self.startup_duration = round((end - self.start_timer) * 1000, 2)
-
-        on_startup("Client", self.startup_duration, motd=self.motd)
-
-        logger.success(f"Connected to remote host at [{self.host}:{self.port}]")
+        self.display_connected_banner()
 
         # Set blocking to false.
         self.socket.setblocking(False)
