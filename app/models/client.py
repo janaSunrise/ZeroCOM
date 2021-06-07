@@ -5,12 +5,11 @@ import typing as t
 
 from .encryption import RSA
 from ..config import HEADER_LENGTH
-from ..utils import Logger, on_startup
+from ..mixins.logging import CustomLoggingClass
+from ..utils import on_startup
 
-logger = Logger()
 
-
-class Client:
+class Client(CustomLoggingClass):
     __slots__ = (
         "host",
         "port",
@@ -46,7 +45,7 @@ class Client:
             self.socket.connect((self.host, self.port))
         except ConnectionRefusedError:
             on_startup("Client")
-            logger.error("Connection could not be established. Invalid HOST/PORT.")
+            self.logger.error("Connection could not be established. Invalid HOST/PORT.")
             sys.exit(1)
 
     def disconnect(self) -> None:
@@ -58,7 +57,7 @@ class Client:
 
         on_startup("Client", self.startup_duration, motd=self.motd)
 
-        logger.success(f"Connected to remote host at [{self.host}:{self.port}]")
+        self.logger.success(f"Connected to remote host at [{self.host}:{self.port}]")
 
     def initialize(self) -> None:
         # Send the specified uname.
@@ -85,7 +84,7 @@ class Client:
         username_header = self.socket.recv(HEADER_LENGTH)
 
         if not len(username_header):
-            logger.error("Server has closed the connection.")
+            self.logger.error("Server has closed the connection.")
             sys.exit(1)
 
         username_len = int(username_header.decode().strip())

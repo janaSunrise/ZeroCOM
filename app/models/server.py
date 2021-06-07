@@ -9,12 +9,11 @@ import rsa
 from .message import Message
 from .server_side_client import Client
 from ..config import HEADER_LENGTH, MOTD
-from ..utils import Logger, get_color, on_startup
+from ..mixins.logging import CustomLoggingClass
+from ..utils import get_color, on_startup
 
-logger = Logger()
 
-
-class Server:
+class Server(CustomLoggingClass):
     __slots__ = (
         "sockets_list",
         "clients",
@@ -59,7 +58,7 @@ class Server:
             self.socket.close()
 
             on_startup("Server")
-            logger.error(f"Server could not be initialized. Error: {exc}")
+            self.logger.error(f"Server could not be initialized. Error: {exc}")
 
             sys.exit(1)
         else:
@@ -80,7 +79,7 @@ class Server:
             # Add socket to the list of sockets.
             self.sockets_list.append(self.socket)
 
-            logger.success("Server started. Listening for connections.")
+            self.logger.success("Server started. Listening for connections.")
 
     def disconnect(self) -> None:
         for socket_ in self.sockets_list:
@@ -93,7 +92,7 @@ class Server:
     def remove_errored_sockets(self, errored_sockets: list) -> None:
         for socket_ in errored_sockets:
             client = self.clients[socket_]
-            logger.warning(
+            self.logger.warning(
                 f"{get_color('YELLOW')}Exception occurred. Location: {client.username} [{client.address}]"
             )
 
@@ -109,7 +108,7 @@ class Server:
 
             return Message(message_header, socket_.recv(message_length))
         except Exception as exc:
-            logger.error(f"Exception occurred: {exc}")
+            self.logger.error(f"Exception occurred: {exc}")
 
     def process_connection(self) -> None:
         socket_, address = self.socket.accept()
@@ -120,11 +119,11 @@ class Server:
         client = Client(socket_, address, uname, pub_key)
 
         if not uname:
-            logger.error(f"New connection failed from {client.address}.")
+            self.logger.error(f"New connection failed from {client.address}.")
             return
 
         if not pub_key:
-            logger.error(f"New connection failed from {client.address}. No key auth found. {pub_key}")
+            self.logger.error(f"New connection failed from {client.address}. No key auth found. {pub_key}")
             return
 
         self.sockets_list.append(socket_)
@@ -135,9 +134,9 @@ class Server:
         motd_header = client.get_header(motd)
 
         client.socket.send(motd_header + motd)
-        logger.info("Sent!")
+        self.logger.info("Sent!")
 
-        logger.success(
+        self.logger.success(
             f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."
         )
 
@@ -158,7 +157,7 @@ class Server:
         if not message or not sign:
             client = self.clients[socket_]
 
-            logger.error(f"Connection closed [{client.username}@{client.address}]")
+            self.logger.error(f"Connection closed [{client.username}@{client.address}]")
             self.remove_specified_socket(socket_)
 
             return
@@ -171,10 +170,10 @@ class Server:
             if rsa.verify(message.data, sign.data, client.pub_key):
                 msg = message.data.decode()
 
-                logger.message(client.username, msg)
+                self.logger.message(client.username, msg)
                 self.broadcast_message(socket_, client, message)
         except rsa.pkcs1.VerificationError:
-            logger.warning(
+            self.logger.warning(
                 f"Received incorrect verification from {client.address} [{client.username}] | "
                 f"message:{message.data.decode()})"
             )

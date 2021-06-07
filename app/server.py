@@ -4,9 +4,6 @@ import time
 
 from .config import IP, MAX_CONNECTIONS, PORT
 from .models.server import Server
-from .utils import Logger
-
-logger = Logger()
 
 if __name__ == "__main__":
     # -- Perf counter --
@@ -24,7 +21,7 @@ if __name__ == "__main__":
                 server.sockets_list, [], server.sockets_list
             )
         except KeyboardInterrupt:
-            logger.info("Server stopping.")
+            server.logger.info("Server stopping...")
 
             start = time.perf_counter()
 
@@ -35,7 +32,7 @@ if __name__ == "__main__":
             end = time.perf_counter()
             duration = round((end - start) * 1000, 2)
 
-            logger.success(f"Server stopped successfully in {duration}s.")
+            server.logger.success(f"Server stopped successfully in {duration}s.")
             sys.exit(0)
 
         for socket_ in ready_to_read:
