@@ -88,9 +88,7 @@ making the commit message.
 ## 💬 Get in touch
 
 If you have various suggestions, questions or want to discuss things with our community, Have a look at
-[Github discussions](https://github.com/janaSunrise/useful-python-snippets/discussions) or join our discord server!
-
-[![Discord](https://discordapp.com/api/guilds/835940276869791816/widget.png?style=shield)](https://discord.gg/MKC4qna4Gz)
+[Github discussions](https://github.com/janaSunrise/ZeroCom/discussions) !
 
 ## Show your support
 
