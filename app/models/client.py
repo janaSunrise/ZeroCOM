@@ -101,8 +101,8 @@ class Client(CustomLoggingClass):
             message_header = self.get_header(message)
 
             # Key auth
-            priv_key_sign = RSA.sign_message(message, self.PRIVATE_KEY)
-            priv_key_sign_header = self.get_header(priv_key_sign)
+            key_sign = RSA.sign_message(message, self.PRIVATE_KEY)
+            key_sign_header = self.get_header(key_sign)
 
-            self.socket.send(priv_key_sign_header + priv_key_sign)
+            self.socket.send(key_sign_header + key_sign)
             self.socket.send(message_header + message)
