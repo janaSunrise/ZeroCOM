@@ -3,7 +3,7 @@ from ..utils import Logger
 
 class CustomLoggingClass:
     @property
-    def logger(self):
+    def logger(self) -> Logger:
         try:
             return self._log
         except AttributeError:

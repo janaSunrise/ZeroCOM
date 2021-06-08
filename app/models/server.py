@@ -85,7 +85,7 @@ class Server(CustomLoggingClass):
         for socket_ in self.sockets_list:
             socket_.close()
 
-    def remove_specified_socket(self, sock: socket.socket):
+    def remove_specified_socket(self, sock: socket.socket) -> None:
         self.sockets_list.remove(sock)
         del self.clients[sock]
 
