@@ -14,7 +14,7 @@ pipenv sync -d
 ## Usage
 
 The server uses a configuration file (`config.ini`) located in the root of the project to
-run it. It is configured to run in `127.0.0.1:5700` TCP port by default. You can change things 
+run it. It is configured to run in `127.0.0.1:5700` TCP port by default. You can change things
 as you need and configure according to you.
 
 To connect to the ZeroCom server, It is essential to have a ZeroCom client to establish
@@ -39,7 +39,7 @@ python -m app.client <SERVER_IP> <PORT> <USERNAME> <PASSWORD>
 
 #### Message formatting
 
-Yes, You heard that right! We support user based message formatting. If you want 
+Yes, You heard that right! We support user based message formatting. If you want
 to express yourself better, That's now possible!
 
 What can you do?
@@ -57,7 +57,7 @@ This colors `Hi` as blue, and `Hello` as red.
 
 We support a lot of colors, use any you want to!
 
-You can also format your message, by adding "boldness", "italics", "codeblocks" and more! Here are 
+You can also format your message, by adding "boldness", "italics", "codeblocks" and more! Here are
 some examples:
 - Bold: `[bold]This is bold[/]`
 - Italics: `[i]This is italics[/]`
@@ -67,7 +67,7 @@ some examples:
 You can combine more styles together as such: `[blue bold]This is blue and bold[/]`
 And you can also use nested tags together as following, `[blue]Blueeee [bold]bold[/bold][/blue]`
 
-And finally, You can use emojis easily! Here's a example: `Star emoji - :star:`, and `:star:` 
+And finally, You can use emojis easily! Here's a example: `Star emoji - :star:`, and `:star:`
 gets converted into ⭐
 
 ## Future plans, Bugs and Issues
@@ -78,11 +78,11 @@ To check the Bugs and Issues we face currently in the application, Check here: h
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome. After cloning & setting up project locally, you can just submit 
+Contributions, issues and feature requests are welcome. After cloning & setting up project locally, you can just submit
 a PR to this repo and it will be deployed once it's accepted.
 
-⚠️ It’s good to have descriptive commit messages, or PR titles so that other contributors can understand about your 
-commit or the PR Created. Read [conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.3/) before 
+⚠️ It’s good to have descriptive commit messages, or PR titles so that other contributors can understand about your
+commit or the PR Created. Read [conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.3/) before
 making the commit message.
 
 ## 💬 Get in touch
@@ -92,7 +92,7 @@ If you have various suggestions, questions or want to discuss things with our co
 
 ## Show your support
 
-We love people's support in growing and improving. Be sure to leave a ⭐️ if you like the project and 
+We love people's support in growing and improving. Be sure to leave a ⭐️ if you like the project and
 also be sure to contribute, if you're interested!
 
 <div align="center">
