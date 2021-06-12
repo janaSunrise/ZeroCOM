@@ -72,6 +72,7 @@ class Client(CustomLoggingClass):
         self.socket.send(uname_header + uname)
         self.socket.send(public_key_header + exported_public_key)
 
+        # Receive the MOTD
         motd_len = int(self.socket.recv(HEADER_LENGTH).decode().strip())
         self.motd = self.socket.recv(motd_len).decode().strip()
 

@@ -6,5 +6,5 @@ class Message:
         self.header = header
         self.data = data
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.data.decode()

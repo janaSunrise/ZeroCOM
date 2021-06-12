@@ -37,9 +37,8 @@ class Server(CustomLoggingClass):
         # Initialize the main sockets.
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if os.name == "posix":
-            self.socket.setsockopt(
-                socket.SOL_SOCKET, socket.SO_REUSEADDR, 1
-            )  # REUSE_ADDR works diff on windows.
+            # REUSE_ADDR works differently on windows
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         # Initialize startup timer and calculate duration
         self.start_timer = time.perf_counter()
@@ -129,16 +128,17 @@ class Server(CustomLoggingClass):
         self.sockets_list.append(socket_)
         self.clients[socket_] = client
 
+        # Log successful connection
+        self.logger.success(
+            f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."
+        )
+
         # Send the data to Client
         motd = self.motd.encode()
         motd_header = client.get_header(motd)
 
+        # Sent the MOTD
         client.socket.send(motd_header + motd)
-        self.logger.info("Sent!")
-
-        self.logger.success(
-            f"{get_color('GREEN')}Accepted new connection requested by {client.username} [{client.address}]."
-        )
 
     def broadcast_message(self, sock: socket.socket, client: Client, message: Message) -> None:
         for client_socket in self.clients:

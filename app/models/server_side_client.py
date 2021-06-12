@@ -34,6 +34,7 @@ class Client:
         if pub_key:
             self.pub_key_header = pub_key.header
             self.pub_key_pem = pub_key.data
+
             self.pub_key = RSA.load_key_pkcs1(self.pub_key_pem)
 
     @staticmethod
