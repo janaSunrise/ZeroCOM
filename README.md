@@ -1,4 +1,5 @@
 # Welcome to ZeroCom 👋
+
 [![Twitter: janaSunrise](https://img.shields.io/twitter/follow/janaSunrise.svg?style=social)](https://twitter.com/janaSunrise)
 
 > A secure and advanced chat application in Python.
@@ -43,6 +44,7 @@ Yes, You heard that right! We support user based message formatting. If you want
 to express yourself better, That's now possible!
 
 What can you do?
+
 - Change color of message / various sections of it.
 - Add markdown / formatting to messages!
 - Use emojis with the format of `:<emoji-name>:` and It's converted into an emoji!
@@ -59,6 +61,7 @@ We support a lot of colors, use any you want to!
 
 You can also format your message, by adding "boldness", "italics", "codeblocks" and more! Here are
 some examples:
+
 - Bold: `[bold]This is bold[/]`
 - Italics: `[i]This is italics[/]`
 - Underline: `[u]This is underline[/]`
