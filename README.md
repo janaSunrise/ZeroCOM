@@ -4,7 +4,7 @@
 
 > A secure and advanced chat application in Python.
 
-## Install
+## Installation
 
 The project uses pipenv for dependencies. Here's how to install the dependencies.
 
@@ -75,9 +75,9 @@ gets converted into ⭐
 
 ## Future plans, Bugs and Issues
 
-For the Future plans and more, check out Kanban board: https://github.com/janaSunrise/ZeroCOM/projects/
+For the future plans and more, check out the project board: https://github.com/janaSunrise/ZeroCOM/projects/.
 
-To check the Bugs and Issues we face currently in the application, Check here: https://github.com/janaSunrise/ZeroCOM/issues
+To check the bugs and issues currently in the code, check here: https://github.com/janaSunrise/ZeroCOM/issues
 
 ## 🤝 Contributing
 
@@ -91,7 +91,7 @@ making the commit message.
 ## 💬 Get in touch
 
 If you have various suggestions, questions or want to discuss things with our community, Have a look at
-[Github discussions](https://github.com/janaSunrise/ZeroCom/discussions) !
+[Github discussions](https://github.com/janaSunrise/ZeroCom/discussions)!
 
 ## Show your support
 
