@@ -1,9 +1,8 @@
-# -- Imports --
 from textwrap import dedent
 
 from .utils import config_parser, get_bright_color
 
-# -- Constants --
+# Constants.
 BANNER = dedent(f"""{get_bright_color("CYAN")}
  ____               _____
 /_  / ___ _______  / ___/__  __ _
