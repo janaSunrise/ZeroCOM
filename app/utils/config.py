@@ -6,15 +6,15 @@ def config_parser(
     filename: str,
     section: str,
     variable: str,
-    bool_: bool = False,
-    int_: bool = False
+    cast_bool: bool = False,
+    cast_int: bool = False
 ) -> t.Any:
     parser = ConfigParser()
     parser.read(filename)
 
-    if bool_:
+    if cast_bool:
         return parser.getboolean(section, variable)
-    elif int_:
+    elif cast_int:
         return parser.getint(section, variable)
     else:
         return parser.get(section, variable)
