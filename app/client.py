@@ -4,6 +4,7 @@ import sys
 import time
 
 from .models.client import Client
+from .utils.contextmanagers import Timer
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
@@ -33,16 +34,9 @@ if __name__ == "__main__":
             print()
             client.logger.info("Disconnecting, hold on.")
 
-            start = time.perf_counter()
+            with Timer(lambda x: client.logger.success(f"Disconnected successfully in {x}ms.")):
+                client.disconnect()
 
-            # Close the connection
-            client.disconnect()
-
-            # Calculate the timing.
-            end = time.perf_counter()
-            duration = round((end - start) * 1000, 2)
-
-            client.logger.success(f"Disconnected successfully in {duration}s.")
             sys.exit(0)
 
         for run_sock in ready_to_read:

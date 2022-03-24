@@ -97,7 +97,7 @@ class Server(LoggingMixin):
 
             self.remove_specified_socket(current_socket)
 
-    def receive_message(self, client_socket: socket) -> t.Optional[Message]:
+    def receive_message(self, client_socket: socket.socket) -> t.Optional[Message]:
         try:
             message_header = client_socket.recv(HEADER_LENGTH)
             if not len(message_header):
@@ -148,7 +148,7 @@ class Server(LoggingMixin):
 
                 client_socket.send(sender_information + message_to_send)
 
-    def process_message(self, client_socket: socket) -> None:
+    def process_message(self, client_socket: socket.socket) -> None:
         # Receive Signature and message
         sign = self.receive_message(client_socket)
         message = self.receive_message(client_socket)
@@ -172,7 +172,7 @@ class Server(LoggingMixin):
 
                 self.logger.message(client.username, msg)
                 self.broadcast_message(client_socket, client, message)
-        except rsa.pkcs1.VerificationError:
+        except rsa.VerificationError:
             self.logger.warning(
                 f"Received incorrect verification from {client.address} [{client.username}] | "
                 f"message:{message.data.decode()})"

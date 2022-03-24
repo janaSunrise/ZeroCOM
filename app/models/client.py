@@ -23,7 +23,7 @@ class Client(LoggingMixin):
     )
 
     def __init__(self, address: tuple, username: str) -> None:
-        self.host, self.post = address
+        self.host, self.port = address
         self.username = username
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -99,12 +99,12 @@ class Client(LoggingMixin):
 
     def send_message(self, message: t.Optional[str] = None) -> None:
         if message:
-            message = message.replace("\n", "").encode()
-            message_header = self.get_header(message)
+            message_bytes = message.replace("\n", "").encode()
+            message_header = self.get_header(message_bytes)
 
             # Key auth
-            key_sign = RSA.sign_message(message, self.PRIVATE_KEY)
+            key_sign = RSA.sign_message(message_bytes, self.PRIVATE_KEY)
             key_sign_header = self.get_header(key_sign)
 
             self.socket.send(key_sign_header + key_sign)
-            self.socket.send(message_header + message)
+            self.socket.send(message_header + message_bytes)

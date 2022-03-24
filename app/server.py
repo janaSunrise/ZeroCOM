@@ -1,9 +1,9 @@
 import select
 import sys
-import time
 
 from .config import IP, MAX_CONNECTIONS, PORT
 from .models.server import Server
+from .utils.contextmanagers import Timer
 
 if __name__ == "__main__":
     # Initialize the socket
@@ -18,16 +18,9 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             server.logger.info("Server stopping...")
 
-            start = time.perf_counter()
+            with Timer(lambda x: server.logger.success(f"Server stopped successfully in {x}ms.")):
+                server.disconnect()
 
-            # Close the connection
-            server.disconnect()
-
-            # Calculate the timing.
-            end = time.perf_counter()
-            duration = round((end - start) * 1000, 2)
-
-            server.logger.success(f"Server stopped successfully in {duration}s.")
             sys.exit(0)
 
         for socket_ in ready_to_read:
