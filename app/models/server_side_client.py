@@ -1,10 +1,9 @@
+import socket
 import typing as t
 
-import socket
-
-from ..encryption.rsa import RSA
 from .message import Message
 from ..config import HEADER_LENGTH
+from ..encryption.rsa import RSA
 
 
 class Client:
