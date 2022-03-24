@@ -6,20 +6,15 @@ from .config import IP, MAX_CONNECTIONS, PORT
 from .models.server import Server
 
 if __name__ == "__main__":
-    # -- Perf counter --
-    start = time.perf_counter()
-
-    # Initialize the socket object
+    # Initialize the socket
     server = Server((IP, PORT), MAX_CONNECTIONS)
 
-    # Try the connection
+    # Connect to the server
     server.connect()
 
     while True:
         try:
-            ready_to_read, _, in_error = select.select(
-                server.sockets_list, [], server.sockets_list
-            )
+            ready_to_read, _, in_error = select.select(server.sockets_list, [], server.sockets_list)
         except KeyboardInterrupt:
             server.logger.info("Server stopping...")
 

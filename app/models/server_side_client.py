@@ -2,7 +2,7 @@ import typing as t
 
 import socket
 
-from .encryption import RSA
+from ..encryption.rsa import RSA
 from .message import Message
 from ..config import HEADER_LENGTH
 

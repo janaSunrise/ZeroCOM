@@ -10,22 +10,18 @@ if __name__ == "__main__":
         print("Usage: python -m client <SERVER_IP> <PORT> <USERNAME> <PASSWORD>")
         sys.exit(1)
 
-    # -- Perf counter --
-    start = time.perf_counter()
-
     _, SERVER_IP, PORT, USERNAME, PASSWORD = sys.argv
     PORT = int(PORT)
 
     # Initialize the client object
     client = Client((SERVER_IP, PORT), USERNAME)
 
-    # Try the connection
+    # Connect and initialize
     client.connect()
     client.initialize()
 
     # Print the initial message logging.
     client.logger.flash("Welcome to the chat. CTRL+C to disconnect. Happy chatting!\n")
-
     client.logger.message("ME", "", end="")
 
     while True:
@@ -57,11 +53,11 @@ if __name__ == "__main__":
                     print()
                     client.logger.message(username, message)
                     client.logger.message("ME", "", end="")
-                    sys.stdout.flush()
 
+                    sys.stdout.flush()
                 except IOError as e:
                     if e.errno != errno.EAGAIN and e.errno != errno.EWOULDBLOCK:
-                        client.logger.error(f"Reading Error occurred! {str(e)}")
+                        client.logger.error(f"Error occured while reading: {str(e)}")
                         sys.exit()
 
                     continue

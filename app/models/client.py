@@ -3,8 +3,8 @@ import sys
 import time
 import typing as t
 
-from .encryption import RSA
 from ..config import HEADER_LENGTH
+from ..encryption.rsa import RSA
 from ..mixins.logging import LoggingMixin
 from ..utils import on_startup
 
@@ -76,10 +76,11 @@ class Client(LoggingMixin):
         motd_len = int(self.socket.recv(HEADER_LENGTH).decode().strip())
         self.motd = self.socket.recv(motd_len).decode().strip()
 
-        self.display_connected_banner()
-
         # Set blocking to false.
         self.socket.setblocking(False)
+
+        # Display banner
+        self.display_connected_banner()
 
     def receive_message(self) -> tuple:
         username_header = self.socket.recv(HEADER_LENGTH)

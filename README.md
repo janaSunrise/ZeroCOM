@@ -1,12 +1,12 @@
-# Welcome to ZeroCom 👋
+# ZeroCom 🚀
 
 [![Twitter: janaSunrise](https://img.shields.io/twitter/follow/janaSunrise.svg?style=social)](https://twitter.com/janaSunrise)
 
-> A secure and advanced chat application in Python.
+A secure and advanced chat application in Python.
 
 ## Installation
 
-The project uses pipenv for dependencies. Here's how to install the dependencies.
+The project uses pipenv for dependencies. Here's how to install the dependencies:
 
 ```sh
 pipenv sync -d
