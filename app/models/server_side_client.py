@@ -1,3 +1,5 @@
+import typing as t
+
 import socket
 
 from .encryption import RSA
@@ -20,15 +22,19 @@ class Client:
     )
 
     def __init__(
-        self, sock: socket.socket, address: list, uname: Message, pub_key: Message
+        self,
+        client_socket: socket.socket,
+        address: t.Union[list, tuple],
+        username: Message,
+        pub_key: Message
     ) -> None:
-        self.socket = sock
+        self.socket = client_socket
 
         self.ip, self.port = address
         self.address = f"{address[0]}:{address[1]}"
 
-        self.username_header = uname.header
-        self.raw_username = uname.data
+        self.username_header = username.header
+        self.raw_username = username.data
         self.username = self.raw_username.decode()
 
         if pub_key:

@@ -9,11 +9,11 @@ import rsa
 from .message import Message
 from .server_side_client import Client
 from ..config import HEADER_LENGTH, MOTD
-from ..mixins.logging import CustomLoggingClass
+from ..mixins.logging import LoggingMixin
 from ..utils import get_color, on_startup
 
 
-class Server(CustomLoggingClass):
+class Server(LoggingMixin):
     __slots__ = (
         "sockets_list",
         "clients",
@@ -64,7 +64,7 @@ class Server(CustomLoggingClass):
             end = time.perf_counter()
             duration = round((end - self.start_timer) * 1000, 2)
 
-            on_startup("Server", duration, ip=self.host, port=self.port)
+            on_startup("Server", duration, self.host, self.port)
 
             # Listening backlog
             if not self.backlog:
@@ -81,43 +81,43 @@ class Server(CustomLoggingClass):
             self.logger.success("Server started. Listening for connections.")
 
     def disconnect(self) -> None:
-        for socket_ in self.sockets_list:
-            socket_.close()
+        for current_socket in self.sockets_list:
+            current_socket.close()
 
     def remove_specified_socket(self, sock: socket.socket) -> None:
         self.sockets_list.remove(sock)
         del self.clients[sock]
 
     def remove_errored_sockets(self, errored_sockets: list) -> None:
-        for socket_ in errored_sockets:
-            client = self.clients[socket_]
+        for current_socket in errored_sockets:
+            client = self.clients[current_socket]
             self.logger.warning(
                 f"{get_color('YELLOW')}Exception occurred. Location: {client.username} [{client.address}]"
             )
 
-            self.remove_specified_socket(socket_)
+            self.remove_specified_socket(current_socket)
 
-    def receive_message(self, socket_: socket) -> t.Optional[Message]:
+    def receive_message(self, client_socket: socket) -> t.Optional[Message]:
         try:
-            message_header = socket_.recv(HEADER_LENGTH)
+            message_header = client_socket.recv(HEADER_LENGTH)
             if not len(message_header):
                 return
 
             message_length = int(message_header.decode().strip())
 
-            return Message(message_header, socket_.recv(message_length))
+            return Message(message_header, client_socket.recv(message_length))
         except Exception as exc:
             self.logger.error(f"Exception occurred: {exc}")
 
     def process_connection(self) -> None:
-        socket_, address = self.socket.accept()
+        client_socket, address = self.socket.accept()
 
-        uname = self.receive_message(socket_)
-        pub_key = self.receive_message(socket_)
+        username = self.receive_message(client_socket)
+        pub_key = self.receive_message(client_socket)
 
-        client = Client(socket_, address, uname, pub_key)
+        client = Client(client_socket, address, username, pub_key)
 
-        if not uname:
+        if not username:
             self.logger.error(f"New connection failed from {client.address}.")
             return
 
@@ -125,8 +125,8 @@ class Server(CustomLoggingClass):
             self.logger.error(f"New connection failed from {client.address}. No key auth found. {pub_key}")
             return
 
-        self.sockets_list.append(socket_)
-        self.clients[socket_] = client
+        self.sockets_list.append(client_socket)
+        self.clients[client_socket] = client
 
         # Log successful connection
         self.logger.success(
@@ -148,22 +148,22 @@ class Server(CustomLoggingClass):
 
                 client_socket.send(sender_information + message_to_send)
 
-    def process_message(self, socket_: socket) -> None:
+    def process_message(self, client_socket: socket) -> None:
         # Receive Signature and message
-        sign = self.receive_message(socket_)
-        message = self.receive_message(socket_)
+        sign = self.receive_message(client_socket)
+        message = self.receive_message(client_socket)
 
         # If disconnected
         if not message or not sign:
-            client = self.clients[socket_]
+            client = self.clients[client_socket]
 
             self.logger.error(f"Connection closed [{client.username}@{client.address}]")
-            self.remove_specified_socket(socket_)
+            self.remove_specified_socket(client_socket)
 
             return
 
         # Get the client
-        client = self.clients[socket_]
+        client = self.clients[client_socket]
 
         # Verify key
         try:
@@ -171,7 +171,7 @@ class Server(CustomLoggingClass):
                 msg = message.data.decode()
 
                 self.logger.message(client.username, msg)
-                self.broadcast_message(socket_, client, message)
+                self.broadcast_message(client_socket, client, message)
         except rsa.pkcs1.VerificationError:
             self.logger.warning(
                 f"Received incorrect verification from {client.address} [{client.username}] | "
@@ -181,5 +181,5 @@ class Server(CustomLoggingClass):
             warning = Message(None, "Messaging failed from user due to incorrect verification.".encode())
             warning.header = client.get_header(warning.data)
 
-            self.broadcast_message(socket_, client, warning)
+            self.broadcast_message(client_socket, client, warning)
             return

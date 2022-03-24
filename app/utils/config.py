@@ -1,20 +1,36 @@
 import typing as t
 from configparser import ConfigParser
 
+from ..constants import CONFIG_FILE
+
+# Define global parser
+parser = ConfigParser()
+
+# Load the config file.
+parser.read(CONFIG_FILE)
+
+# Utility function for string to boolean.
+TRUE_VALUES = {"y", "yes", "t", "true", "on", "1"}
+FALSE_VALUES = {"n", "no", "f", "false", "off", "0"}
+
+
+def strtobool(value: str) -> bool:
+    value = value.lower()
+
+    if value in TRUE_VALUES:
+        return True
+    elif value in FALSE_VALUES:
+        return False
+
+    raise ValueError(f"Invalid boolean value {value}")
+
 
 def config_parser(
-    filename: str,
     section: str,
     variable: str,
-    cast_bool: bool = False,
-    cast_int: bool = False
+    cast: t.Type = str
 ) -> t.Any:
-    parser = ConfigParser()
-    parser.read(filename)
+    if cast is bool:
+        cast = strtobool
 
-    if cast_bool:
-        return parser.getboolean(section, variable)
-    elif cast_int:
-        return parser.getint(section, variable)
-    else:
-        return parser.get(section, variable)
+    return cast(parser.get(section, variable))

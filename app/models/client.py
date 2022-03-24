@@ -5,11 +5,11 @@ import typing as t
 
 from .encryption import RSA
 from ..config import HEADER_LENGTH
-from ..mixins.logging import CustomLoggingClass
+from ..mixins.logging import LoggingMixin
 from ..utils import on_startup
 
 
-class Client(CustomLoggingClass):
+class Client(LoggingMixin):
     __slots__ = (
         "host",
         "port",
@@ -23,8 +23,7 @@ class Client(CustomLoggingClass):
     )
 
     def __init__(self, address: tuple, username: str) -> None:
-        self.host = address[0]
-        self.port = address[1]
+        self.host, self.post = address
         self.username = username
 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -45,6 +44,7 @@ class Client(CustomLoggingClass):
             self.socket.connect((self.host, self.port))
         except ConnectionRefusedError:
             on_startup("Client")
+
             self.logger.error("Connection could not be established. Invalid HOST/PORT.")
             sys.exit(1)
 

@@ -1,7 +1,7 @@
 from ..utils import Logger
 
 
-class CustomLoggingClass:
+class LoggingMixin:
     @property
     def logger(self) -> Logger:
         try:

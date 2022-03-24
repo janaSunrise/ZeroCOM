@@ -1,4 +1,3 @@
-# -- Imports --
 from datetime import datetime
 
 from colorama import Back
@@ -6,7 +5,13 @@ from rich.console import Console
 
 from .colors import get_bright_color, get_color
 
-# -- Mappings --
+
+def get_log_color_mapping(color_key: str, symbol: str) -> str:
+    color_map = log_color_mapping[color_key]
+    return f"[{color_map}{symbol}{get_color('RESET')}]"
+
+
+# Color and log type mapping
 log_color_mapping = {
     "error": get_bright_color("RED"),
     "warning": get_bright_color("YELLOW"),
@@ -18,13 +23,13 @@ log_color_mapping = {
 }
 
 log_mapping = {
-    "error": f"[{log_color_mapping['error']}%{get_color('RESET')}]",
-    "warning": f"[{log_color_mapping['warning']}!{get_color('RESET')}]",
-    "message": f"[{log_color_mapping['message']}>{get_color('RESET')}]",
-    "success": f"[{log_color_mapping['success']}+{get_color('RESET')}]",
-    "info": f"[{log_color_mapping['info']}#{get_color('RESET')}]",
-    "critical": f"[{log_color_mapping['critical']}X{get_color('RESET')}{Back.RESET}]",
-    "flash": f"[{log_color_mapping['flash']}-{get_color('RESET')}]",
+    "error": get_log_color_mapping("error", "%"),
+    "warning": get_log_color_mapping("warning", "!"),
+    "message": get_log_color_mapping("message", ">"),
+    "success": get_log_color_mapping("success", "+"),
+    "info": get_log_color_mapping("info", "#"),
+    "critical": get_log_color_mapping("critical", "X"),
+    "flash": get_log_color_mapping("flash", "-"),
 }
 
 
@@ -43,81 +48,39 @@ class Logger:
 
         return f"[{timestamp}]{message}"
 
-    def error(self, message: str, date: bool = True) -> None:
-        log_type = "error"
-
+    def _print_log(self, log_type: str, message: str, date: bool = True) -> None:
         message_prefix = log_mapping[log_type]
-
         message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
+
         if date:
             message = self._append_date(message)
 
         print(message)
+
+    def error(self, message: str, date: bool = True) -> None:
+        self._print_log("error", message, date)
 
     def warning(self, message: str, date: bool = True) -> None:
-        log_type = "warning"
-
-        message_prefix = log_mapping[log_type]
-
-        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
-        if date:
-            message = self._append_date(message)
-
-        print(message)
-
-    def message(self, username: str, message: str, date: bool = True, **kwargs) -> None:
-        log_type = "message"
-
-        message_prefix = log_mapping[log_type]
-
-        message_pre = f"{get_bright_color('YELLOW')} {username}{get_color('RESET')} {message_prefix} "
-
-        if date:
-            message_pre = self._append_date(message_pre)
-
-        print(message_pre, end="")
-        self._console.print(message, **kwargs)
+        self._print_log("warning", message, date)
 
     def success(self, message: str, date: bool = True) -> None:
-        log_type = "success"
-
-        message_prefix = log_mapping[log_type]
-
-        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
-        if date:
-            message = self._append_date(message)
-
-        print(message)
+        self._print_log("success", message, date)
 
     def info(self, message: str, date: bool = True) -> None:
-        log_type = "info"
-
-        message_prefix = log_mapping[log_type]
-
-        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
-        if date:
-            message = self._append_date(message)
-
-        print(message)
+        self._print_log("info", message, date)
 
     def critical(self, message: str, date: bool = True) -> None:
-        log_type = "critical"
-
-        message_prefix = log_mapping[log_type]
-
-        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
-        if date:
-            message = self._append_date(message)
-
-        print(message)
+        self._print_log("critical", message, date)
 
     def flash(self, message: str, date: bool = True) -> None:
-        log_type = "flash"
+        self._print_log("flash", message, date)
 
-        message_prefix = log_mapping[log_type]
+    def message(self, username: str, user_message: str, date: bool = True, **kwargs) -> None:
+        message_prefix = log_mapping["message"]
+        message = f"{get_bright_color('YELLOW')} {username}{get_color('RESET')} {message_prefix} "
 
-        message = f"{message_prefix} {log_color_mapping[log_type]}{message}"
         if date:
             message = self._append_date(message)
 
-        print(message)
+        print(message, end="")
+        self._console.print(user_message, **kwargs)

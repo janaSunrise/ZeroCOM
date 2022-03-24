@@ -18,6 +18,7 @@ flake8-bugbear = "*"
 flake8-import-order = "*"
 
 [scripts]
-server = "python -m server"
+server = "python -m app.server"
+client = "python -m app.client"
 precommit = "pre-commit install"
 lint = "pre-commit run --all-files"

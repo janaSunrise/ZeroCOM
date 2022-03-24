@@ -26,7 +26,7 @@ connection and use it.
 Here's how you can run the server so you can connect using clients.
 
 ```sh
-python -m app.server
+pipenv run server
 ```
 
 #### Running the client, and logging into a server
@@ -35,7 +35,7 @@ Once you have the server running, or someone else has a ZeroCom server running,
 Here's how you can login to the server by running the client like this.
 
 ```sh
-python -m app.client <SERVER_IP> <PORT> <USERNAME> <PASSWORD>
+pipenv run client <SERVER_IP> <PORT> <USERNAME> <PASSWORD>
 ```
 
 #### Message formatting
@@ -49,7 +49,7 @@ What can you do?
 - Add markdown / formatting to messages!
 - Use emojis with the format of `:<emoji-name>:` and It's converted into an emoji!
 
-You can change color of message in following way: `[blue] Hello, world! [/]`
+You can change color of message in following way: `[blue]Hello, world![/]`
 
 `[<contents>][/]` are the opening, and closing tag, and the contents can have the color you want.
 
@@ -75,9 +75,9 @@ gets converted into ⭐
 
 ## Future plans, Bugs and Issues
 
-For the future plans and more, check out the project board: https://github.com/janaSunrise/ZeroCOM/projects/.
+For the future plans and more, check out the project board: https://github.com/janaSunrise/ZeroCOM/projects.
 
-To check the bugs and issues currently in the code, check here: https://github.com/janaSunrise/ZeroCOM/issues
+To check the bugs and issues currently in the code, check here: https://github.com/janaSunrise/ZeroCOM/issues.
 
 ## 🤝 Contributing
 
@@ -98,6 +98,4 @@ If you have various suggestions, questions or want to discuss things with our co
 We love people's support in growing and improving. Be sure to leave a ⭐️ if you like the project and
 also be sure to contribute, if you're interested!
 
-<div align="center">
-  Made by Sunrit Jana with ❤️
-</div>
+<div align="center">Made by Sunrit Jana with ❤️</div>
