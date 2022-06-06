@@ -25,6 +25,8 @@ pre-commit = "^2.19.0"
 taskipy = "^1.10.2"
 isort = "^5.10.1"
 pyright = "^1.1.252"
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
 
 [tool.black]
 line-length = 120
@@ -41,6 +43,9 @@ skip = [".venv", ".git", ".cache"]
 precommit = "pre-commit install"
 lint = "pre-commit run --all-files"
 format = "black . && isort ."
+test = "pytest --cov=app --cov-report=term --cov-report=html tests --failed-first"
+retest = "pytest --cov=app --cov-report=term --cov-report=html tests --last-failed"
+test-nocov = "pytest --no-cov tests --failed-first"
 server = "python -m app.server"
 client = "python -m app.client"
 
