@@ -2,7 +2,7 @@
 max_line_length=120
 import-order-style=pycharm
 application-import-names=app
-exclude=.venv,.git
+exclude=.venv,.git,.cache
 ignore=
     ANN002, # *args
     ANN003, # **kwargs
