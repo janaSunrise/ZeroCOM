@@ -34,3 +34,12 @@ repos:
         entry: poetry run black
         language: system
         types: [python]
+
+  - repo: local
+    hooks:
+      - id: isort
+        name: ISort
+        description: Sort imports with isort
+        entry: poetry run isort
+        language: system
+        types: [python]
