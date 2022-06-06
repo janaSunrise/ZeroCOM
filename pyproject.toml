@@ -13,12 +13,14 @@ rich = "^12.4.4"
 toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
-autopep8 = "^1.6.0"
-pre-commit = "^2.19.0"
 flake8 = "^4.0.1"
 flake8-annotations = "^2.9.0"
 flake8-bugbear = "^22.4.25"
 flake8-import-order = "^0.18.1"
+flake8-tidy-imports = "^4.8.0"
+pep8-naming = "^0.13.0"
+autopep8 = "^1.6.0"
+pre-commit = "^2.19.0"
 taskipy = "^1.10.2"
 
 [tool.taskipy.tasks]
