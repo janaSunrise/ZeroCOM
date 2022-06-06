@@ -77,7 +77,7 @@ jobs:
       # We skip the major hooks here, because we want to see their output, and
       # success status separately in another task. They are ran below.
       - name: Run general pre-commit hooks
-        run: PIP_USER=0; SKIP=flake8,black,isort pre-commit run --all-files
+        run: PIP_USER=0; SKIP=flake8,black,isort,pyright pre-commit run --all-files
 
       - name: Run flake8 linter
         run: flake8 .
@@ -87,3 +87,6 @@ jobs:
 
       - name: Run isort import formatter (check)
         run: isort --check .
+
+      - name: Run pyright type checker
+        run: pyright -v $PYTHONUSERBASE
