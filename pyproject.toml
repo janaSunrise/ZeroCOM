@@ -11,6 +11,7 @@ colorama = "^0.4.4"
 rsa = "^4.8"
 rich = "^12.4.4"
 toml = "^0.10.2"
+coloredlogs = {version = "^15.0.1", optional = true}
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"

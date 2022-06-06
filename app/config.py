@@ -3,10 +3,8 @@ from textwrap import dedent
 
 import toml
 
-# Version for the app
+# Hard-coded constants
 VERSION = "0.1.0"
-
-# Banner to be displayed when the server is run
 BANNER = dedent(
     """
  ____               _____
@@ -16,10 +14,14 @@ BANNER = dedent(
 """
 )
 
+# Logging setting
+DEBUG = bool(os.environ.get("ZEROCOM_DEBUG", 0))
+LOG_FILE = os.environ.get("ZEROCOM_LOG_FILE", None)
+LOG_FILE_MAX_SIZE = int(os.environ.get("ZEROCOM_LOG_FILE_SIZE_MAX", 1_048_576))  # in bytes (default: 1MiB)
+
 # Config file location, in this case it's `config.toml` in root
 CONFIG_FILE = os.environ.get("ZEROCOM_CONFIG_FILE", "config.toml")
 config = toml.load(CONFIG_FILE)
-
 server_config = config["server"]["config"]
 
 
