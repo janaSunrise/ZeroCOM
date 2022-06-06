@@ -31,6 +31,7 @@ class Client:
     def reconnect(self) -> None:
         self.disconnect()
         self.connect((self.host, self.port))
+
     # Endregion.
 
     # Region: Message related logic.
@@ -57,4 +58,5 @@ class Client:
         msg = self.socket.recv(msg_length).decode()
 
         return username, msg
+
     # Endregion.
