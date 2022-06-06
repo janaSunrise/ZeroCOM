@@ -1,7 +1,6 @@
 import errno
 import select
 import sys
-import time
 
 from .models.client import Client
 from .utils.contextmanagers import Timer
@@ -34,7 +33,9 @@ if __name__ == "__main__":
             print()
             client.logger.info("Disconnecting, hold on.")
 
-            with Timer(lambda x: client.logger.success(f"Disconnected successfully in {x}ms.")):
+            with Timer(
+                lambda x: client.logger.success(f"Disconnected successfully in {x}ms.")
+            ):
                 client.disconnect()
 
             sys.exit(0)

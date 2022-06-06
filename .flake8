@@ -16,6 +16,5 @@ ignore=
     # Allow lambdas
     E731,
     # Allow markdown inline HTML
-    MD033,
-    # allow __init__ imports
-    F401
+    MD033
+per-file-ignores=*/__init__.py:F401
