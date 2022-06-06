@@ -1,6 +1,6 @@
 <h1 align="center">ZeroCOM 🚀</h1>
 
-<h3 align="center">Powerful chat application, built using Python. ✨!</h3>
+<h3 align="center">Powerful chat application, built using Python. ✨</h3>
 
 <!-- Badges -->
 <p align="center">
@@ -104,7 +104,7 @@ making the commit message.
 If you have various suggestions, questions or want to discuss things with our community, Have a look at
 [Github discussions](https://github.com/janaSunrise/ZeroCom/discussions)!
 
-## Show your support
+## 👇 Show your support
 
 We love people's support in growing and improving. Be sure to leave a ⭐️ if you like the project and
 also be sure to contribute, if you're interested!
