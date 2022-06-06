@@ -28,7 +28,6 @@ server_config = config["server"]["config"]
 class Config:
     IP = server_config["ip"]
     PORT = server_config["port"]
-    HEADER_LENGTH = server_config["header-length"]
     MOTD = server_config["motd"]
 
     PASSWORD = config["server"]["auth"]["password"]

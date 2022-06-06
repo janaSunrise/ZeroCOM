@@ -2,8 +2,6 @@
 ip = "127.0.0.1"
 port = 5000
 
-header-length = 4096
-
 motd = "Welcome to Zerocom Chat!"
 
 # Leave empty for system defined amount. Only integer allowed.
