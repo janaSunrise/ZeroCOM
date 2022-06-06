@@ -1,3 +1,4 @@
+import os
 from textwrap import dedent
 
 import toml
@@ -16,7 +17,7 @@ BANNER = dedent(
 )
 
 # Config file location, in this case it's `config.toml` in root
-CONFIG_FILE = "config.toml"
+CONFIG_FILE = os.environ.get("ZEROCOM_CONFIG_FILE", "config.toml")
 config = toml.load(CONFIG_FILE)
 
 server_config = config["server"]["config"]
