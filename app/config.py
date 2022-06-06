@@ -6,12 +6,14 @@ import toml
 VERSION = "0.1.0"
 
 # Banner to be displayed when the server is run
-BANNER = dedent("""
+BANNER = dedent(
+    """
  ____               _____
 /_  / ___ _______  / ___/__  __ _
  / /_/ -_) __/ _ \\/ /__/ _ \\/  ' \\
 /___/\\__/_/  \\___/\\___/\\___/_/_/_/
-""")
+"""
+)
 
 # Config file location, in this case it's `config.toml` in root
 CONFIG_FILE = "config.toml"

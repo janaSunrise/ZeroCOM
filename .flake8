@@ -1,6 +1,6 @@
 [flake8]
 max_line_length=120
-import-order-style=pycharm
+extend-ignore=E203 # flake8 has conflicting handling with black here
 application-import-names=app
 exclude=.venv,.git,.cache
 ignore=

@@ -77,7 +77,13 @@ jobs:
       # We skip the major hooks here, because we want to see their output, and
       # success status separately in another task. They are ran below.
       - name: Run general pre-commit hooks
-        run: PIP_USER=0; SKIP=flake8 pre-commit run --all-files
+        run: PIP_USER=0; SKIP=flake8,black,isort pre-commit run --all-files
 
       - name: Run flake8 linter
         run: flake8 .
+
+      - name: Run black formatter (check)
+        run: black --check .
+
+      - name: Run isort import formatter (check)
+        run: isort --check .
