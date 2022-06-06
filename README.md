@@ -1,12 +1,17 @@
-# ZeroCom 🚀
+<h1 align="center">ZeroCOM 🚀</h1>
 
-## Powerful chat application, built using Python. ✨
+<h3 align="center">Powerful chat application, built using Python. ✨!</h3>
 
 <!-- Badges -->
+<p align="center">
+  <a href="https://twitter.com/janaSunrise">
+    <img src="https://img.shields.io/twitter/follow/janaSunrise.svg?style=social" alt="Twitter" />
+  </a>
 
-[![Twitter: janaSunrise](https://img.shields.io/twitter/follow/janaSunrise.svg?style=social)](https://twitter.com/janaSunrise)
-
-[![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/janaSunrise/ZeroCOM/graphs/commit-activity)
+  <a href="https://github.com/janaSunrise/ZeroCOM/graphs/commit-activity">
+    <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" alt="Maintained" />
+  </a>
+</p>
 
 <!-- Links -->
 <h3 align="center">
