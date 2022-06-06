@@ -1,0 +1,72 @@
+name: Validation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+# Cancel already running workflows if new ones are scheduled
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Make sure pip caches dependencies and installs as user
+  PIP_NO_CACHE_DIR: false
+  PIP_USER: 1
+
+  # Make sure poetry won't use virtual environments
+  POETRY_VIRTUALENVS_CREATE: false
+
+  # Specify paths here, so we know what to cache
+  POETRY_CACHE_DIR: ${{ github.workspace }}/.cache/py-user-base
+  PYTHONUSERBASE: ${{ github.workspace }}/.cache/py-user-base
+
+jobs:
+  unit-tests:
+    runs-on: ${{ matrix.platform }}
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.7", "3.10"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Add custom PYTHONUSERBASE to PATH
+        run: echo '${{ env.PYTHONUSERBASE }}/bin/' >> $GITHUB_PATH
+        shell: bash
+
+      - name: Set up Python
+        id: python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Cache python dependencies so that unless we change them,
+      # we won't need to reinstall them with each workflow run.
+      # The key is a composite of multiple values, which when changed
+      # the cache won't be restored in order to make updating possible
+      - name: Python dependency caching
+        uses: actions/cache@v2
+        id: python_cache
+        with:
+          path: ${{ env.PYTHONUSERBASE }}
+          key: "python-0-${{ runner.os }}-${{ env.PYTHONUSERBASE }}-\
+                ${{ steps.python.outputs.python-version }}-\
+                ${{ hashFiles('./pyproject.toml', './poetry.lock') }}"
+
+      # In case the dependencies weren't restored, install them
+      - name: Install dependencies using poetry
+        if: steps.python_cache.outputs.cache-hit != 'true'
+        run: |
+          pip install poetry
+          poetry install
+
+      # Run the unit-tests using pytest
+      - name: Run pytest
+        run: poetry run task test
