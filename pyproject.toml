@@ -10,6 +10,7 @@ python = ">=3.7,<4"
 colorama = "^0.4.4"
 rsa = "^4.8"
 rich = "^12.4.4"
+toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.6.0"

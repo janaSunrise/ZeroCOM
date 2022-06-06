@@ -1,8 +1,9 @@
 from textwrap import dedent
 
-from .utils import config_parser, get_bright_color
+import toml
 
-# Constants.
+from .utils import get_bright_color
+
 BANNER = dedent(f"""{get_bright_color("CYAN")}
  ____               _____
 /_  / ___ _______  / ___/__  __ _
@@ -10,15 +11,17 @@ BANNER = dedent(f"""{get_bright_color("CYAN")}
 /___/\\__/_/  \\___/\\___/\\___/_/_/_/
 """)
 
-# Server related config.
-IP = config_parser("server", "IP")
-PORT = config_parser("server", "port", cast=int)
-HEADER_LENGTH = config_parser("server", "HEADER_LEN", cast=int)
-MOTD = config_parser("server", "MOTD")
+# Load the `config.toml` from the root
+config = toml.load("config.toml")
 
-# Authentication config.
-PASSWORD = config_parser("auth", "PASSWORD")
+server_config = config["server"]["config"]
 
-# Max connections.
-MAX_CONNECTIONS = config_parser("server", "MAX_CONNECTIONS")
-MAX_CONNECTIONS = None if MAX_CONNECTIONS == "" else MAX_CONNECTIONS
+IP = server_config["ip"]
+PORT = server_config["port"]
+HEADER_LENGTH = server_config["header-length"]
+MOTD = server_config["motd"]
+
+PASSWORD = config["server"]["auth"]["password"]
+
+# Load the max connections, It's `None` if 0 is specified.
+MAX_CONNECTIONS = server_config["max-connections"] if server_config["max-connections"] != 0 else None
