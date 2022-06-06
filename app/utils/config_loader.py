@@ -29,7 +29,7 @@ def config_parser(
     section: str,
     variable: str,
     cast: t.Type = str
-) -> t.Any:
+) -> t.Any:  # noqa: ANN401
     if cast is bool:
         cast = strtobool
 
