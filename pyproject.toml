@@ -3,7 +3,7 @@ name = "ZeroCOM"
 version = "0.1.0"
 description = "Powerful chat application, built using Python."
 authors = ["Sunrit Jana <warriordefenderz@gmail.com>"]
-license = "Apache-2.0"
+license = "GPL-3.0-or-later"
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4"
