@@ -2,9 +2,7 @@
 max_line_length=120
 import-order-style=pycharm
 application-import-names=app
-exclude=
-    .venv/**,
-    .git/**
+exclude=.venv,.git
 ignore=
     # Ignore missing return type annotations for special methods
     ANN204, ANN206, ANN202
