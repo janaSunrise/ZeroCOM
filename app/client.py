@@ -4,8 +4,8 @@ import socket
 import sys
 from queue import Queue
 
-from .config import Config
-from .utils.header import get_header
+from app.config import Config
+from app.utils.header import get_header
 
 
 class Client:
