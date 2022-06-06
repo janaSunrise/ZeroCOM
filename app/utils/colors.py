@@ -8,4 +8,4 @@ def get_color(color: str) -> str:
 
 
 def get_bright_color(color: str) -> str:
-    return getattr(colorama.Style, "BRIGHT") + get_color(color)  # noqa: B009
+    return colorama.Style.BRIGHT + get_color(color)
