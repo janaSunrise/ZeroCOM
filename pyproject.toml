@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "ZeroCOM"
+version = "0.1.0"
+description = "A secure and advanced chat application."
+authors = ["Your Name <you@example.com>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+colorama = "^0.4.4"
+rsa = "^4.8"
+rich = "^12.4.4"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.6.0"
+pre-commit = "^2.19.0"
+flake8 = "^4.0.1"
+flake8-annotations = "^2.9.0"
+flake8-bugbear = "^22.4.25"
+flake8-import-order = "^0.18.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
