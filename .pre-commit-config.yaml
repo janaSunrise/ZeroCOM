@@ -3,7 +3,7 @@ repos:
     rev: v4.0.1
     hooks:
       - id: check-merge-conflict
-      - id: check-toml
+      - id: check-toml # For pyproject.toml
       - id: end-of-file-fixer
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
@@ -13,8 +13,8 @@ repos:
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.9.0
     hooks:
-      - id: python-check-blanket-noqa
-      - id: python-use-type-annotations
+      - id: python-check-blanket-noqa # Enforce specific noqa annotations (noqa: F401,W203)
+      - id: python-use-type-annotations # Enforce type annotations instead of type comments
 
   - repo: local
     hooks:
