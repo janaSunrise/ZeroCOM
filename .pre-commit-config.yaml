@@ -19,15 +19,6 @@ repos:
 
   - repo: local
     hooks:
-      - id: flake8
-        name: Flake8
-        description: Run flake8 checks on the code
-        entry: poetry run flake8
-        language: system
-        types: [python]
-
-  - repo: local
-    hooks:
       - id: black
         name: Black
         description: Auto-format the code with black
@@ -41,5 +32,14 @@ repos:
         name: ISort
         description: Sort imports with isort
         entry: poetry run isort
+        language: system
+        types: [python]
+
+  - repo: local
+    hooks:
+      - id: flake8
+        name: Flake8
+        description: Run flake8 checks on the code
+        entry: poetry run flake8
         language: system
         types: [python]
