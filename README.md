@@ -1,10 +1,23 @@
 # ZeroCom 🚀
 
+## Powerful chat application, built using Python. ✨
+
+<!-- Badges -->
+
 [![Twitter: janaSunrise](https://img.shields.io/twitter/follow/janaSunrise.svg?style=social)](https://twitter.com/janaSunrise)
 
-A secure and advanced chat application in Python.
+[![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/janaSunrise/ZeroCOM/graphs/commit-activity)
 
-## Installation
+<!-- Links -->
+<h3 align="center">
+  <a href="https://github.com/janaSunrise/ZeroCOM/issues">Report a bug</a>
+  <span> · </span>
+  <a href="https://github.com/janaSunrise/ZeroCOM/discussions">Discussions</a>
+</h3>
+
+## 🚀 Installation
+
+**Python 3.7 or above is required!**
 
 The project uses pipenv for dependencies. Here's how to install the dependencies:
 
@@ -14,12 +27,11 @@ pipenv sync -d
 
 ## Usage
 
-The server uses a configuration file (`config.ini`) located in the root of the project to
-run it. It is configured to run in `127.0.0.1:5700` TCP port by default. You can change things
-as you need and configure according to you.
+The server uses a configuration file (`config.ini`) located in the root of the project to run it.
+It is configured to run in `127.0.0.1:5700` TCP port by default. You can change things as you need
+and configure according to you.
 
-To connect to the ZeroCom server, It is essential to have a ZeroCom client to establish
-connection and use it.
+To connect to the ZeroCom server, It is essential to have a ZeroCom client to establish connection and use it.
 
 #### Running the server
 
@@ -73,16 +85,10 @@ And you can also use nested tags together as following, `[blue]Blueeee [bold]bol
 And finally, You can use emojis easily! Here's a example: `Star emoji - :star:`, and `:star:`
 gets converted into ⭐
 
-## Future plans, Bugs and Issues
-
-For the future plans and more, check out the project board: https://github.com/janaSunrise/ZeroCOM/projects.
-
-To check the bugs and issues currently in the code, check here: https://github.com/janaSunrise/ZeroCOM/issues.
-
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome. After cloning & setting up project locally, you can just submit
-a PR to this repo and it will be deployed once it's accepted.
+Contributions, issues and feature requests are welcome. After cloning & setting up project locally, you can
+just submit a PR to this repo and it will be deployed once it's accepted.
 
 ⚠️ It’s good to have descriptive commit messages, or PR titles so that other contributors can understand about your
 commit or the PR Created. Read [conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.3/) before
