@@ -12,4 +12,4 @@ ignore=
 
     E731,  # Allow inline lambdas
     MD033, # Allow inline HTML in markdown
-per-file-ignores=*/__init__.py:F401
+per-file-ignores=*/__init__.py:F401,test_*.py:ANN
