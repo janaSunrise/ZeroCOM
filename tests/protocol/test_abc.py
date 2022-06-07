@@ -49,6 +49,45 @@ class TestReader:
         read_mock.combined_data = bytearray(read_bytes)
         assert self.reader.read_byte() == expected_value
 
+    @pytest.mark.parametrize(
+        "read_bytes,expected_value",
+        (
+            ([0], 0),
+            ([1], 1),
+            ([2], 2),
+            ([15], 15),
+            ([127], 127),
+            ([128, 1], 128),
+            ([129, 1], 129),
+            ([255, 1], 255),
+            ([192, 132, 61], 1000000),
+            ([255, 255, 255, 255, 7], 2147483647),
+        ),
+    )
+    def test_read_varint(self, read_bytes: list[int], expected_value: int, read_mock: ReadFunctionMock):
+        """Reading varint bytes results in correct values."""
+        read_mock.combined_data = bytearray(read_bytes)
+        assert self.reader.read_varint() == expected_value
+
+    @pytest.mark.parametrize(
+        "read_bytes,expected_value",
+        (
+            ([0], 0),
+            ([154, 1], 154),
+            ([255, 255, 3], 2**16 - 1),
+        ),
+    )
+    def test_read_varint_max_size(self, read_bytes: list[int], expected_value: int, read_mock: ReadFunctionMock):
+        """Varint reading should be limitable to n max bytes and work with values in range."""
+        read_mock.combined_data = bytearray(read_bytes)
+        assert self.reader.read_varint(max_size=2) == expected_value
+
+    def test_read_varnum_max_size_out_of_range(self, read_mock: ReadFunctionMock):
+        """Varint reading limited to n max bytes should raise an IOError for numbers out of this range."""
+        read_mock.combined_data = bytearray([128, 128, 4])
+        with pytest.raises(IOError):
+            self.reader.read_varint(max_size=2)
+
 
 class TestWriter:
     @classmethod
@@ -91,3 +130,46 @@ class TestWriter:
             self.writer.write_ubyte(256)
         with pytest.raises(ValueError):
             self.writer.write_ubyte(-1)
+
+    @pytest.mark.parametrize(
+        "number,expected_bytes",
+        (
+            (0, [0]),
+            (1, [1]),
+            (2, [2]),
+            (15, [15]),
+            (127, [127]),
+            (128, [128, 1]),
+            (129, [129, 1]),
+            (255, [255, 1]),
+            (1000000, [192, 132, 61]),
+            (2147483647, [255, 255, 255, 255, 7]),
+        ),
+    )
+    def test_write_varint(self, number: int, expected_bytes: list[int], write_mock: WriteFunctionMock):
+        """Writing varints results in correct bytes."""
+        self.writer.write_varint(number)
+        write_mock.assert_has_data(bytearray(expected_bytes))
+
+    def test_write_varint_out_of_range(self):
+        """Varint without max size should only work with positive integers."""
+        with pytest.raises(ValueError):
+            self.writer.write_varint(-1)
+
+    @pytest.mark.parametrize(
+        "number,expected_bytes",
+        (
+            (0, [0]),
+            (154, [154, 1]),
+            (2**16 - 1, [255, 255, 3]),
+        ),
+    )
+    def test_write_varint_max_size(self, number: int, expected_bytes: list[int], write_mock: WriteFunctionMock):
+        """Varints should be limitable to n max bytes and work with values in range."""
+        self.writer.write_varint(number, max_size=2)
+        write_mock.assert_has_data(bytearray(expected_bytes))
+
+    def test_write_varint_max_size_out_of_range(self):
+        """Varints limited to n max bytes should raise ValueErrors for numbers out of this range."""
+        with pytest.raises(ValueError):
+            self.writer.write_varint(2**16, max_size=2)
