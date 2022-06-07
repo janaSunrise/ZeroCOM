@@ -88,6 +88,19 @@ class TestReader:
         with pytest.raises(IOError):
             self.reader.read_varint(max_size=2)
 
+    @pytest.mark.parametrize(
+        "read_bytes,expected_string",
+        (
+            ([len("test")] + list(map(ord, "test")), "test"),
+            ([len("a" * 100)] + list(map(ord, "a" * 100)), "a" * 100),
+            ([0], ""),
+        ),
+    )
+    def test_read_utf(self, read_bytes: list[int], expected_string: str, read_mock: ReadFunctionMock):
+        """Reading UTF string results in correct values."""
+        read_mock.combined_data = bytearray(read_bytes)
+        assert self.reader.read_utf() == expected_string
+
 
 class TestWriter:
     @classmethod
@@ -173,3 +186,16 @@ class TestWriter:
         """Varints limited to n max bytes should raise ValueErrors for numbers out of this range."""
         with pytest.raises(ValueError):
             self.writer.write_varint(2**16, max_size=2)
+
+    @pytest.mark.parametrize(
+        "string,expected_bytes",
+        (
+            ("test", [len("test")] + list(map(ord, "test"))),
+            ("a" * 100, [len("a" * 100)] + list(map(ord, "a" * 100))),
+            ("", [0]),
+        ),
+    )
+    def test_write_utf(self, string: str, expected_bytes: list[int], write_mock: WriteFunctionMock):
+        """Writing UTF string results in correct bytes."""
+        self.writer.write_utf(string)
+        write_mock.assert_has_data(bytearray(expected_bytes))
