@@ -9,7 +9,7 @@ class Client:
     def __init__(self, address: tuple[str, int], username: str, timeout: float = 3) -> None:
         self.host, self.port = address
         self.username = username
-        self.connection = SocketConnection(address, timeout)
+        self.connection = SocketConnection.from_address(address, timeout)
 
         # Queue for incoming messages
         self.queue = Queue()
