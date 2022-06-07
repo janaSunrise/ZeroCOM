@@ -29,6 +29,12 @@ def setup_logging() -> None:
         if "COLOREDLOGS_LOG_FORMAT" not in os.environ:
             coloredlogs.DEFAULT_LOG_FORMAT = LOG_FORMAT
 
+        if "COLOREDLOGS_LEVEL_STYLES" not in os.environ:
+            coloredlogs.DEFAULT_LEVEL_STYLES = {
+                **coloredlogs.DEFAULT_LEVEL_STYLES,
+                "critical": {"background": "red"},
+            }
+
         coloredlogs.install(level=logging.DEBUG, logger=root_log, stream=sys.stdout)
     else:
         stdout_handler = logging.StreamHandler(stream=sys.stdout)
