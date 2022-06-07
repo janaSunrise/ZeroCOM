@@ -70,6 +70,23 @@ class Server:
 
         log.info(f"Accepted message from {client}: {msg}")
 
+    def disconnect_client(self, client_socket: socket.socket) -> None:
+        try:
+            client = self.connected_clients[client_socket]
+        except KeyError:
+            log.debug(f"Ignoring disconnect request for untracked client: {client_socket} (already disconnected?)")
+            return
+
+        log.info(f"Disconnecting {client}.")
+        del self.connected_clients[client_socket]
+        client_socket.close()
+
+    def stop(self) -> None:
+        """Disconnect all clients and close the server socket connection."""
+        for client_sock in self.connected_clients:
+            client_sock.close()
+        self.socket.close()
+
     @staticmethod
     def _make_socket(address: tuple[str, int], backlog: Optional[int] = None) -> socket.socket:
         """Make server socket capable of accepting new connections."""
