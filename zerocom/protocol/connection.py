@@ -6,6 +6,11 @@ from zerocom.protocol.abc import BaseReader, BaseWriter
 
 
 class SocketConnection(BaseReader, BaseWriter):
+    """Networked implementation for BaseReader and BaseWriter via python's sockets.
+
+    This class holds all basic interactions for writing/reading data (i.e. sending/receiving) data via sockets.
+    """
+
     def __init__(self, socket: socket.socket):
         self.socket = socket
 

@@ -4,6 +4,11 @@ from zerocom.protocol.abc import BaseReader, BaseWriter
 
 
 class Buffer(BaseReader, BaseWriter, bytearray):
+    """Buffer implementation for BaseReader and BaseWriter via python's bytearrays.
+
+    This class holds all basic interactions for writing/reading data into/from internal bytearray.
+    """
+
     __slots__ = ("pos",)
 
     def __init__(self, *args, **kwargs):
