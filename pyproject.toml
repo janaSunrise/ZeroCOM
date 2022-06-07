@@ -44,11 +44,11 @@ skip = [".venv", ".git", ".cache"]
 precommit = "pre-commit install"
 lint = "pre-commit run --all-files"
 format = "black . && isort ."
-test = "pytest --cov=app --cov-report=term --cov-report=html tests --failed-first"
-retest = "pytest --cov=app --cov-report=term --cov-report=html tests --last-failed"
+test = "pytest --cov=zerocom --cov-report=term --cov-report=html tests --failed-first"
+retest = "pytest --cov=zerocom --cov-report=term --cov-report=html tests --last-failed"
 test-nocov = "pytest --no-cov tests --failed-first"
-server = "python -m app.server"
-client = "python -m app.client"
+server = "python -m zerocom.server"
+client = "python -m zerocom.client"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

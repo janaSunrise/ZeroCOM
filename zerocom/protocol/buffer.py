@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.protocol.abc import BaseReader, BaseWriter
+from zerocom.protocol.abc import BaseReader, BaseWriter
 
 
 class Buffer(BaseReader, BaseWriter, bytearray):

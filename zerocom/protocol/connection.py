@@ -3,7 +3,7 @@ from __future__ import annotations
 import socket
 from typing import TYPE_CHECKING
 
-from app.protocol.abc import BaseReader, BaseWriter
+from zerocom.protocol.abc import BaseReader, BaseWriter
 
 if TYPE_CHECKING:
     from typing_extensions import Self

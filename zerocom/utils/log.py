@@ -6,7 +6,7 @@ import os
 import sys
 from pathlib import Path
 
-import app.config
+import zerocom.config
 
 try:
     import coloredlogs  # type: ignore # pyright complains if this isn't installed
@@ -14,9 +14,9 @@ except ImportError:
     coloredlogs = None
 
 
-LOG_LEVEL = logging.DEBUG if app.config.DEBUG else logging.INFO
-LOG_FILE = app.config.LOG_FILE
-LOG_FILE_MAX_SIZE = app.config.LOG_FILE_MAX_SIZE
+LOG_LEVEL = logging.DEBUG if zerocom.config.DEBUG else logging.INFO
+LOG_FILE = zerocom.config.LOG_FILE
+LOG_FILE_MAX_SIZE = zerocom.config.LOG_FILE_MAX_SIZE
 LOG_FORMAT = "%(asctime)s | %(name)s | %(levelname)7s | %(message)s"
 
 

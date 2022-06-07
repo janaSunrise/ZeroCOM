@@ -1,6 +1,6 @@
 import pytest
 
-from app.protocol.buffer import Buffer
+from zerocom.protocol.buffer import Buffer
 
 
 def test_write():

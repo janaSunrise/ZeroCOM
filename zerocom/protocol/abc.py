@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from itertools import count
 from typing import Any, Optional, cast
 
-from app.protocol.utils import enforce_range
+from zerocom.protocol.utils import enforce_range
 
 
 class BaseWriter(ABC):

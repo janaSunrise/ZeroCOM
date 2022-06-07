@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from queue import Queue
 
-from app.protocol.connection import SocketConnection
+from zerocom.protocol.connection import SocketConnection
 
 
 class Client:
