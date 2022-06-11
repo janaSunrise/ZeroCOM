@@ -4,6 +4,8 @@ import socket
 from typing import Optional
 from unittest.mock import MagicMock
 
+import pytest
+
 from tests.protocol.helpers import ReadFunctionMock, WriteFunctionMock
 from zerocom.protocol.connection import SocketConnection
 
@@ -25,6 +27,12 @@ def test_read():
 
     conn.socket.recv.assert_read_everything()
     assert out == data
+
+
+def test_read_more_data_than_sent():
+    conn = SocketConnection(MockSocket(read_data=bytearray("test", "utf-8")))
+    with pytest.raises(IOError):
+        conn.read(10)
 
 
 def test_write():
