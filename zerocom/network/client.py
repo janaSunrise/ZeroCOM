@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import logging
 import socket
 from queue import Queue
 
 from zerocom.protocol.connection import SocketConnection
+
+log = logging.getLogger(__name__)
 
 
 class Client:
@@ -26,6 +29,7 @@ class Client:
 
     def send(self, message: str) -> None:
         message = message.replace("\n", "")  # TODO: Consider moving to removesuffix (3.9+)
+        log.info(f"Sending message {message} to server.")
         self.connection.write_utf(message)
 
     def receive(self) -> tuple[str, str]:
