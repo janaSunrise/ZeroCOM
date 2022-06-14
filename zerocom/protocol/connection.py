@@ -1,17 +1,20 @@
 from __future__ import annotations
 
 import socket
+from typing import Generic, TypeVar
 
 from zerocom.protocol.abc import BaseReader, BaseWriter
 
+T_SOCK = TypeVar("T_SOCK", bound=socket.socket)
 
-class SocketConnection(BaseReader, BaseWriter):
+
+class SocketConnection(BaseReader, BaseWriter, Generic[T_SOCK]):
     """Networked implementation for BaseReader and BaseWriter via python's sockets.
 
     This class holds all basic interactions for writing/reading data (i.e. sending/receiving) data via sockets.
     """
 
-    def __init__(self, socket: socket.socket):
+    def __init__(self, socket: T_SOCK):
         self.socket = socket
 
     def read(self, length: int) -> bytearray:

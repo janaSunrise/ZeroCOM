@@ -129,3 +129,21 @@ class Server:
             if client_sock.socket != client_socket:
                 client_sock.conn.write_utf(client_sock.username)
                 client_sock.conn.write_utf(message)
+
+    def disconnect_client(self, client_socket: socket.socket) -> None:
+        try:
+            client = self.connected_clients[client_socket]
+        except KeyError:
+            log.debug(f"Ignoring disconnect request for untracked client: {client_socket} (already disconnected?)")
+            return
+
+        log.info(f"Disconnecting {client}.")
+        del self.connected_clients[client_socket]
+        client_socket.close()
+
+    def stop(self) -> None:
+        """Disconnect all clients and close the server socket connection."""
+        for client_sock in self.connected_clients:
+            client_sock.close()
+
+        self.socket.close()

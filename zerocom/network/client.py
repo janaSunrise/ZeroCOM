@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import socket
 from queue import Queue
 
@@ -7,6 +8,8 @@ import rsa
 from rsa.key import PublicKey
 
 from zerocom.protocol.connection import SocketConnection
+
+log = logging.getLogger(__name__)
 
 
 class Client:
@@ -43,6 +46,8 @@ class Client:
         key_sign = rsa.sign(message.encode(), self.private_key, "SHA-1")
 
         self.connection.write_utf(key_sign.decode())
+
+        log.info(f"Sending message {message} to server.")
         self.connection.write_utf(message)
 
     def receive(self) -> tuple[str, str]:
