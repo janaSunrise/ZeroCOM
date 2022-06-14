@@ -1,0 +1,3 @@
+{
+  "exclude": ["./tmp", ".git", "__pycache__"]
+}
