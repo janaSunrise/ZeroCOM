@@ -40,6 +40,9 @@ order_by_type = false
 case_sensitive = true
 skip = [".venv", ".git", ".cache"]
 
+[tool.pyright]
+exclude = ["./tmp", ".git", "__pycache__"]
+
 [tool.taskipy.tasks]
 precommit = "pre-commit install"
 lint = "pre-commit run --all-files"
