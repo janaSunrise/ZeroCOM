@@ -101,6 +101,19 @@ class TestReader:
         read_mock.combined_data = bytearray(read_bytes)
         assert self.reader.read_utf() == expected_string
 
+    @pytest.mark.parametrize(
+        "read_bytes,expected_bytes",
+        (
+            ([1, 1], [1]),
+            ([0], []),
+            ([5, 104, 101, 108, 108, 111], [104, 101, 108, 108, 111]),
+        ),
+    )
+    def test_read_bytearray(self, read_bytes: list[int], expected_bytes: list[int], read_mock: ReadFunctionMock):
+        """Writing a bytearray results in correct bytes."""
+        read_mock.combined_data = bytearray(read_bytes)
+        assert self.reader.read_bytearray() == bytearray(expected_bytes)
+
 
 class TestWriter:
     @classmethod
@@ -198,4 +211,17 @@ class TestWriter:
     def test_write_utf(self, string: str, expected_bytes: list[int], write_mock: WriteFunctionMock):
         """Writing UTF string results in correct bytes."""
         self.writer.write_utf(string)
+        write_mock.assert_has_data(bytearray(expected_bytes))
+
+    @pytest.mark.parametrize(
+        "input_bytes,expected_bytes",
+        (
+            ([1], [1, 1]),
+            ([], [0]),
+            ([104, 101, 108, 108, 111], [5, 104, 101, 108, 108, 111]),
+        ),
+    )
+    def test_write_bytearray(self, input_bytes: list[int], expected_bytes: list[int], write_mock: WriteFunctionMock):
+        """Writing a bytearray results in correct bytes."""
+        self.writer.write_bytearray(bytearray(input_bytes))
         write_mock.assert_has_data(bytearray(expected_bytes))

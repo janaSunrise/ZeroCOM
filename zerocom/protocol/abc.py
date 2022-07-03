@@ -95,6 +95,11 @@ class BaseWriter(ABC):
         self.write_varint(len(value), max_size=max_varint_size)
         self.write(data)
 
+    def write_bytearray(self, data: bytearray) -> None:
+        """Write an arbitrary sequence of bytes, prefixed with a varint of it's size."""
+        self.write_varint(len(data))
+        self.write(data)
+
 
 class BaseReader(ABC):
     """Base class holding read buffer/connection interactions."""
@@ -185,3 +190,8 @@ class BaseReader(ABC):
         length = self.read_varint(max_size=max_varint_size)
         bytes = self.read(length)
         return bytes.decode("utf-8")
+
+    def read_bytearray(self) -> bytearray:
+        """Read an arbitrary sequence of bytes, prefixed with a varint of it's size."""
+        length = self.read_varint()
+        return self.read(length)
