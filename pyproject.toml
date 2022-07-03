@@ -40,13 +40,19 @@ order_by_type = false
 case_sensitive = true
 skip = [".venv", ".git", ".cache"]
 
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+addopts = "--strict-markers --cov=zerocom --cov-report=term --cov-report html --no-cov-on-fail"
+
+
 [tool.taskipy.tasks]
 precommit = "pre-commit install"
 lint = "pre-commit run --all-files"
 format = "black . && isort ."
-test = "pytest --cov=zerocom --cov-branch --cov-report=term-missing --cov-report=html tests --failed-first"
-retest = "pytest --cov=zerocom --cov-branch --cov-report=term-missing --cov-report=html tests --last-failed"
-test-nocov = "pytest --no-cov tests --failed-first"
+test = "pytest --failed-first"
+retest = "pytest --last-failed"
+test-nocov = "pytest --no-cov --failed-first"
 server = "python -m zerocom.server"
 client = "python -m zerocom.client"
 
