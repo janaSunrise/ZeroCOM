@@ -50,9 +50,9 @@ addopts = "--strict-markers --cov=zerocom --cov-branch --cov-report=term-missing
 precommit = "pre-commit install"
 lint = "pre-commit run --all-files"
 format = "black . && isort ."
-test = "pytest --failed-first"
-retest = "pytest --last-failed"
-test-nocov = "pytest --no-cov --failed-first"
+test = "pytest -v --failed-first"
+retest = "pytest -v --last-failed"
+test-nocov = "pytest -v --no-cov --failed-first"
 server = "python -m zerocom.server"
 client = "python -m zerocom.client"
 
