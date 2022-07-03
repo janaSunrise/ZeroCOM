@@ -41,7 +41,7 @@ case_sensitive = true
 skip = [".venv", ".git", ".cache"]
 
 [tool.pyright]
-exclude = ["./tmp", ".git", "__pycache__"]
+ignore = ["tmp"]
 
 [tool.taskipy.tasks]
 precommit = "pre-commit install"
