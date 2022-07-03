@@ -26,11 +26,11 @@ htmlcov/
 *.env
 TODO
 
+# Local gitignore (symlinked to .git/info/exclude)
+.gitignore_local
+
 # Ignore generated log files
 logs/
 
 # Auto-generated folder attributes for MacOS
 .DS_STORE
-
-# Ignore temporary directory
-tmp/
