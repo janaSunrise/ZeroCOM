@@ -17,14 +17,11 @@ LOG_FORMAT = "%(asctime)s | %(name)s | %(levelname)7s | %(message)s"
 def setup_logging() -> None:
     """Sets up logging library to use our log format and defines log levels."""
     root_log = logging.getLogger()
-    log_formatter = logging.Formatter(LOG_FORMAT)
+    log_formatter = logging.Formatter(LOG_FORMAT, datefmt="%Y-%m-%d %H:%M:%S")
 
-    logging.basicConfig(
-        level=LOG_LEVEL,
-        format=LOG_FORMAT,
-        handlers=[RichHandler(show_time=False)],
-        datefmt="%Y-%m-%d %H:%M:%S",  # TODO: Add millisecond precision
-    )
+    rich_handler = RichHandler(show_time=False)
+    rich_handler.setFormatter(log_formatter)
+    root_log.addHandler(rich_handler)
 
     if LOG_FILE is not None:
         file_handler = logging.handlers.RotatingFileHandler(Path(LOG_FILE), maxBytes=LOG_FILE_MAX_SIZE)
