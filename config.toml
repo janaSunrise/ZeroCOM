@@ -1,0 +1,11 @@
+[server.config]
+ip = "127.0.0.1"
+port = 5000
+
+motd = "Welcome to Zerocom Chat!"
+
+# Leave empty for system defined amount. Only integer allowed.
+max-connections = 0
+
+[server.auth]
+password = 12345678

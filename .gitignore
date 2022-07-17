@@ -1,28 +1,36 @@
-# Python cache
+# Python byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Pytest coverage reports
+.coverage
+htmlcov/
 
 # Editor generated files
 .idea/
 .vscode/
 .spyproject/
-
-# VirtualENV files
-env/
-venv/
-.venv/
+.vimrc
+.nvimrc
+.exerc
 
 # Environmental and personal files
 *.env
 TODO
 
-# Database files
-*.sqlite3
-*.sqlite
-*.sql
-*.db
+# Local gitignore (symlinked to .git/info/exclude)
+.gitignore_local
 
-# Ignore personal log files
+# Ignore generated log files
 logs/
 
-# MacOS generatd file
+# Auto-generated folder attributes for MacOS
 .DS_STORE

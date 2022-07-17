@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "ZeroCOM"
+version = "0.1.0"
+description = "Powerful chat application, built using Python."
+authors = ["Sunrit Jana <warriordefenderz@gmail.com>", "ItsDrike <itsdrike@protonmail.com>"]
+license = "GPL-3.0-or-later"
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+colorama = "^0.4.4"
+rsa = "^4.8"
+rich = "^12.4.4"
+toml = "^0.10.2"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^4.0.1"
+flake8-annotations = "^2.9.0"
+flake8-bugbear = "^22.4.25"
+flake8-tidy-imports = "^4.8.0"
+flake8-future-annotations = "^0.0.5"
+pep8-naming = "^0.13.0"
+autopep8 = "^1.6.0"
+black = "^22.3.0"
+pre-commit = "^2.19.0"
+taskipy = "^1.10.2"
+isort = "^5.10.1"
+pyright = "^1.1.252"
+pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
+
+[tool.black]
+line-length = 120
+extend-exclude = "^/.cache"
+
+[tool.isort]
+profile = "black"
+line_length = 120
+order_by_type = false
+case_sensitive = true
+skip = [".venv", ".git", ".cache"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+addopts = "--strict-markers --cov=zerocom --cov-branch --cov-report=term-missing --cov-report html --no-cov-on-fail"
+
+
+[tool.taskipy.tasks]
+precommit = "pre-commit install"
+lint = "pre-commit run --all-files"
+format = "black . && isort ."
+test = "pytest -v --failed-first"
+retest = "pytest -v --last-failed"
+test-nocov = "pytest -v --no-cov --failed-first"
+server = "python -m zerocom.server"
+client = "python -m zerocom.client"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

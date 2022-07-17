@@ -1,0 +1,15 @@
+[flake8]
+max_line_length=120
+extend-ignore=E203 # flake8 has conflicting handling with black here
+application-import-names=zerocom,tests
+exclude=.venv,.git,.cache
+ignore=
+    ANN002, # *args
+    ANN003, # **kwargs
+    ANN101, # self param annotation
+    ANN102, # cls param annotation
+    ANN204, # return type annotation for special methods
+
+    E731,  # Allow inline lambdas
+    MD033, # Allow inline HTML in markdown
+per-file-ignores=*/__init__.py:F401,test_*.py:ANN
