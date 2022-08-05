@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+from typing import Any
+
 import pytest
 
 from tests.protocol.helpers import ReadFunctionMock, Reader, WriteFunctionMock, Writer
+from zerocom.protocol.base_io import INT_FORMATS_TYPE, StructFormat
+from zerocom.protocol.utils import to_twos_complement
 
 
 class TestReader:
@@ -23,31 +27,28 @@ class TestReader:
         mock_f.assert_read_everything()
 
     @pytest.mark.parametrize(
-        "read_bytes,expected_value",
+        "format,read_bytes,expected_value",
         (
-            ([10], 10),
-            ([255], 255),
-            ([0], 0),
+            (StructFormat.UBYTE, [0], 0),
+            (StructFormat.UBYTE, [10], 10),
+            (StructFormat.UBYTE, [255], 255),
+            (StructFormat.BYTE, [0], 0),
+            (StructFormat.BYTE, [20], 20),
+            (StructFormat.BYTE, [127], 127),
+            (StructFormat.BYTE, [to_twos_complement(-20, bits=8)], -20),
+            (StructFormat.BYTE, [to_twos_complement(-128, bits=8)], -128),
         ),
     )
-    def test_read_ubyte(self, read_bytes: list[int], expected_value: int, read_mock: ReadFunctionMock):
-        """Reading byte int should return an integer in a single unsigned byte."""
+    def test_read_value(
+        self,
+        format: INT_FORMATS_TYPE,
+        read_bytes: list[int],
+        expected_value: Any,
+        read_mock: ReadFunctionMock,
+    ):
+        """Reading given values of certain struct format should produce proper expected values."""
         read_mock.combined_data = bytearray(read_bytes)
-        assert self.reader.read_ubyte() == expected_value
-
-    @pytest.mark.parametrize(
-        "read_bytes,expected_value",
-        (
-            ([236], -20),
-            ([128], -128),
-            ([20], 20),
-            ([127], 127),
-        ),
-    )
-    def test_read_byte(self, read_bytes: list[int], expected_value: int, read_mock: ReadFunctionMock):
-        """Negative number bytes should be read from two's complement format."""
-        read_mock.combined_data = bytearray(read_bytes)
-        assert self.reader.read_byte() == expected_value
+        assert self.reader.read_value(format) == expected_value
 
     @pytest.mark.parametrize(
         "read_bytes,expected_value",
@@ -64,29 +65,60 @@ class TestReader:
             ([255, 255, 255, 255, 7], 2147483647),
         ),
     )
-    def test_read_varint(self, read_bytes: list[int], expected_value: int, read_mock: ReadFunctionMock):
-        """Reading varint bytes results in correct values."""
+    def test_read_varuint(self, read_bytes: list[int], expected_value: int, read_mock: ReadFunctionMock):
+        """Reading varuint bytes results in correct values."""
         read_mock.combined_data = bytearray(read_bytes)
-        assert self.reader.read_varint() == expected_value
+        assert self.reader.read_varint(max_bits=32) == expected_value
+
+    @pytest.mark.parametrize(
+        "read_bytes,max_bits",
+        (
+            ([128, 128, 4], 16),
+            ([128, 128, 128, 128, 16], 32),
+        ),
+    )
+    def test_read_varuint_out_of_range(self, read_bytes: list[int], max_bits: int, read_mock: ReadFunctionMock):
+        """Varuint reading limited to n max bits should raise an IOError for numbers out of this range."""
+        read_mock.combined_data = bytearray(read_bytes)
+        with pytest.raises(IOError):
+            self.reader.read_varuint(max_bits=max_bits)
 
     @pytest.mark.parametrize(
         "read_bytes,expected_value",
         (
             ([0], 0),
-            ([154, 1], 154),
-            ([255, 255, 3], 2**16 - 1),
+            ([1], 1),
+            ([128, 1], 128),
+            ([255, 1], 255),
+            ([255, 255, 255, 255, 7], 2147483647),
+            ([255, 255, 255, 255, 15], -1),
+            ([128, 254, 255, 255, 15], -256),
         ),
     )
-    def test_read_varint_max_size(self, read_bytes: list[int], expected_value: int, read_mock: ReadFunctionMock):
-        """Varint reading should be limitable to n max bytes and work with values in range."""
+    def test_read_varint(self, read_bytes: list[int], expected_value: int, read_mock: ReadFunctionMock):
+        """Reading varint bytes results in correct values."""
         read_mock.combined_data = bytearray(read_bytes)
-        assert self.reader.read_varint(max_size=2) == expected_value
+        assert self.reader.read_varint(max_bits=32) == expected_value
 
-    def test_read_varnum_max_size_out_of_range(self, read_mock: ReadFunctionMock):
-        """Varint reading limited to n max bytes should raise an IOError for numbers out of this range."""
-        read_mock.combined_data = bytearray([128, 128, 4])
+    @pytest.mark.parametrize(
+        "read_bytes,max_bits",
+        (
+            ([128, 128, 4], 16),
+            ([255, 255, 255, 255, 23], 32),
+            ([128, 128, 192, 152, 214, 197, 215, 227, 235, 10], 64),
+            ([128, 128, 192, 231, 169, 186, 168, 156, 148, 245, 255, 255, 255, 255, 3], 64),
+        ),
+    )
+    def test_read_varint_out_of_range(self, read_bytes: list[int], max_bits: int, read_mock: ReadFunctionMock):
+        """Reading varint outside of signed max_bits int range should raise ValueError on it's own."""
+        read_mock.combined_data = bytearray(read_bytes)
         with pytest.raises(IOError):
-            self.reader.read_varint(max_size=2)
+            self.reader.read_varint(max_bits=max_bits)
+
+        # The data bytearray was intentionally not fully read/depleted, however by default
+        # ending the function with data remaining in the read_mock would trigger an
+        # AssertionError, so we expllicitly clear it here to prevent that error
+        read_mock.combined_data = bytearray()
 
     @pytest.mark.parametrize(
         "read_bytes,expected_string",
@@ -128,34 +160,47 @@ class TestWriter:
         monkeypatch.setattr(self.writer.__class__, "write", mock_f)
         return mock_f
 
-    def test_write_byte(self, write_mock: WriteFunctionMock):
-        """Writing byte int should store an integer in a single byte."""
-        self.writer.write_byte(15)
-        write_mock.assert_has_data(bytearray([15]))
+    @pytest.mark.parametrize(
+        "format,value,expected_bytes",
+        (
+            (StructFormat.UBYTE, 0, [0]),
+            (StructFormat.UBYTE, 15, [15]),
+            (StructFormat.UBYTE, 255, [255]),
+            (StructFormat.BYTE, 0, [0]),
+            (StructFormat.BYTE, 15, [15]),
+            (StructFormat.BYTE, 127, [127]),
+            (StructFormat.BYTE, -20, [to_twos_complement(-20, bits=8)]),
+            (StructFormat.BYTE, -128, [to_twos_complement(-128, bits=8)]),
+        ),
+    )
+    def test_write_value(
+        self,
+        format: INT_FORMATS_TYPE,
+        value: Any,
+        expected_bytes: list[int],
+        write_mock: WriteFunctionMock,
+    ):
+        """Writing different values of certain struct format should produce proper expected values."""
+        self.writer.write_value(format, value)
+        write_mock.assert_has_data(bytearray(expected_bytes))
 
-    def test_write_byte_negative(self, write_mock: WriteFunctionMock):
-        """Negative number bytes should be stored in two's complement format."""
-        self.writer.write_byte(-20)
-        write_mock.assert_has_data(bytearray([236]))
-
-    def test_write_byte_out_of_range(self):
-        """Signed bytes should only allow writes from -128 to 127."""
+    @pytest.mark.parametrize(
+        "format,value",
+        (
+            (StructFormat.UBYTE, -1),
+            (StructFormat.UBYTE, 256),
+            (StructFormat.BYTE, -129),
+            (StructFormat.BYTE, 128),
+        ),
+    )
+    def test_write_value_out_of_range(
+        self,
+        format: INT_FORMATS_TYPE,
+        value: Any,
+    ):
+        """Trying to write out of range values for given struct type should produce an exception."""
         with pytest.raises(ValueError):
-            self.writer.write_byte(-129)
-        with pytest.raises(ValueError):
-            self.writer.write_byte(128)
-
-    def test_write_ubyte(self, write_mock: WriteFunctionMock):
-        """Writing unsigned byte int should store an integer in a single byte."""
-        self.writer.write_byte(80)
-        write_mock.assert_has_data(bytearray([80]))
-
-    def test_write_ubyte_out_of_range(self):
-        """Unsigned bytes should only allow writes from 0 to 255."""
-        with pytest.raises(ValueError):
-            self.writer.write_ubyte(256)
-        with pytest.raises(ValueError):
-            self.writer.write_ubyte(-1)
+            self.writer.write_value(format, value)
 
     @pytest.mark.parametrize(
         "number,expected_bytes",
@@ -172,33 +217,55 @@ class TestWriter:
             (2147483647, [255, 255, 255, 255, 7]),
         ),
     )
-    def test_write_varint(self, number: int, expected_bytes: list[int], write_mock: WriteFunctionMock):
-        """Writing varints results in correct bytes."""
-        self.writer.write_varint(number)
+    def test_write_varuint(self, number: int, expected_bytes: list[int], write_mock: WriteFunctionMock):
+        """Writing varuints results in correct bytes."""
+        self.writer.write_varuint(number, max_bits=32)
         write_mock.assert_has_data(bytearray(expected_bytes))
 
-    def test_write_varint_out_of_range(self):
-        """Varint without max size should only work with positive integers."""
+    @pytest.mark.parametrize(
+        "write_value,max_bits",
+        (
+            (-1, 128),
+            (-1, 1),
+            (2**16, 16),
+            (2**32, 32),
+        ),
+    )
+    def test_write_varuint_out_of_range(self, write_value: int, max_bits: int):
+        """Trying to write a varuint bigger than specified bit size should produce ValueError"""
         with pytest.raises(ValueError):
-            self.writer.write_varint(-1)
+            self.writer.write_varuint(write_value, max_bits=max_bits)
 
     @pytest.mark.parametrize(
         "number,expected_bytes",
         (
             (0, [0]),
-            (154, [154, 1]),
-            (2**16 - 1, [255, 255, 3]),
+            (1, [1]),
+            (128, [128, 1]),
+            (255, [255, 1]),
+            (2147483647, [255, 255, 255, 255, 7]),
+            (-1, [255, 255, 255, 255, 15]),
+            (-256, [128, 254, 255, 255, 15]),
         ),
     )
-    def test_write_varint_max_size(self, number: int, expected_bytes: list[int], write_mock: WriteFunctionMock):
-        """Varints should be limitable to n max bytes and work with values in range."""
-        self.writer.write_varint(number, max_size=2)
+    def test_write_varint(self, number: int, expected_bytes: list[int], write_mock: WriteFunctionMock):
+        """Writing varints results in correct bytes."""
+        self.writer.write_varint(number, max_bits=32)
         write_mock.assert_has_data(bytearray(expected_bytes))
 
-    def test_write_varint_max_size_out_of_range(self):
-        """Varints limited to n max bytes should raise ValueErrors for numbers out of this range."""
+    @pytest.mark.parametrize(
+        "value,max_bits",
+        (
+            (-2147483649, 32),
+            (2147483648, 32),
+            (10**20, 32),
+            (-(10**20), 32),
+        ),
+    )
+    def test_write_varint_out_of_range(self, value: int, max_bits: int):
+        """Writing varint outside of signed max_bits int range should raise ValueError on it's own."""
         with pytest.raises(ValueError):
-            self.writer.write_varint(2**16, max_size=2)
+            self.writer.write_varint(value, max_bits=max_bits)
 
     @pytest.mark.parametrize(
         "string,expected_bytes",
