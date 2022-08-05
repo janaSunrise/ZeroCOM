@@ -133,7 +133,7 @@ class BaseWriter(ABC):
         self.write_varuint(len(data), max_bits=max_varuint_bits)
         self.write(data)
 
-    def write_bytearray(self, data: bytearray, /, *, max_varuint_bits: int = 16) -> None:
+    def write_bytearray(self, data: bytes, /, *, max_varuint_bits: int = 16) -> None:
         """Write an arbitrary sequence of bytes, prefixed with a varint of it's size."""
         self.write_varuint(len(data), max_bits=max_varuint_bits)
         self.write(data)
