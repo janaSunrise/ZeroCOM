@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from zerocom.exceptions import MalformedPacketError, MalformedPacketState
 from zerocom.packets.abc import Packet
 from zerocom.protocol.base_io import BaseReader, BaseWriter, StructFormat
 
@@ -21,5 +22,15 @@ def write_packet(writer: BaseWriter, packet: Packet) -> None:
 
 def read_packet(reader: BaseReader) -> Packet:
     """Read any arbitrary packet based on it's ID."""
-    packet_id = reader.read_value(StructFormat.SHORT)
-    return PACKET_MAP[packet_id].read(reader)
+    try:
+        packet_id = reader.read_value(StructFormat.SHORT)
+    except IOError as exc:
+        raise MalformedPacketError(MalformedPacketState.MALFORMED_PACKET_ID, ioerror=exc)
+
+    if packet_id not in PACKET_MAP:
+        raise MalformedPacketError(MalformedPacketState.UNRECOGNIZED_PACKET_ID, packet_id=packet_id)
+
+    try:
+        return PACKET_MAP[packet_id].read(reader)
+    except IOError as exc:
+        raise MalformedPacketError(MalformedPacketState.MALFORMED_PACKET_BODY, ioerror=exc, packet_id=packet_id)
