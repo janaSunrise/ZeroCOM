@@ -1,5 +1,5 @@
 [report]
 exclude_lines =
-    pragma: nocover
+    pragma: no cover
     if TYPE_CHECKING:
     @abstractmethod
