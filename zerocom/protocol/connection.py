@@ -3,7 +3,7 @@ from __future__ import annotations
 import socket
 from typing import Generic, TypeVar
 
-from zerocom.protocol.abc import BaseReader, BaseWriter
+from zerocom.protocol.base_io import BaseReader, BaseWriter
 
 T_SOCK = TypeVar("T_SOCK", bound=socket.socket)
 

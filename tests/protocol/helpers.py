@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 from unittest.mock import Mock
 
-from zerocom.protocol.abc import BaseReader, BaseWriter
+from zerocom.protocol.base_io import BaseReader, BaseWriter
 
 
 class Reader(BaseReader):
